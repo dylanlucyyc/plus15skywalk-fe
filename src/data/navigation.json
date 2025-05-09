@@ -1,0 +1,37 @@
+{
+  "leftNav": [
+    {
+      "label": "Home",
+      "link": "/"
+    },
+    {
+      "label": "News",
+      "link": "/news"
+    },
+    {
+      "label": "Events",
+      "link": "/events"
+    },
+    {
+      "label": "Restaurants",
+      "link": "/restaurants"
+    }
+  ],
+  "rightNav": [
+    {
+      "label": "Map",
+      "link": "/map",
+      "className": "font-black"
+    },
+    {
+      "label": "Subscribe",
+      "link": "/subscribe",
+      "className": "font-black"
+    },
+    {
+      "label": "Sign In",
+      "link": "/signin",
+      "className": "font-black"
+    }
+  ]
+}

@@ -1,7 +1,14 @@
 import "./App.css";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
 
 function App() {
-  return <div className="text-[50px]">Hello World</div>;
+  return (
+    <>
+      <Header />
+      <Footer />
+    </>
+  );
 }
 
 export default App;
