@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import navigationData from "../data/navigation.json";
 import footerImage from "../assets/images/footer-image.png";
 
@@ -23,12 +24,12 @@ function Footer() {
               <ul className="space-y-2">
                 {navigationData.leftNav.map((item) => (
                   <li key={item.label}>
-                    <a
-                      href={item.link}
+                    <Link
+                      to={item.link}
                       className="text-gray-300 hover:text-white"
                     >
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -38,12 +39,12 @@ function Footer() {
               <ul className="space-y-2">
                 {navigationData.rightNav.map((item) => (
                   <li key={item.label}>
-                    <a
-                      href={item.link}
+                    <Link
+                      to={item.link}
                       className="text-gray-300 hover:text-white"
                     >
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

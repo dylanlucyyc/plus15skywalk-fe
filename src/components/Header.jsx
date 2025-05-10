@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import navigationData from "../data/navigation.json";
 
 function Header() {
@@ -8,9 +9,9 @@ function Header() {
     return items.map((item, index) => (
       <React.Fragment key={item.label}>
         <li>
-          <a href={item.link} style={{ fontWeight: item.fontWeight }}>
+          <Link to={item.link} style={{ fontWeight: item.fontWeight }}>
             {item.label}
-          </a>
+          </Link>
         </li>
         {index < items.length - 1 && <li>|</li>}
       </React.Fragment>
@@ -79,13 +80,13 @@ function Header() {
               <ul className="space-y-4">
                 {navigationData.leftNav.map((item) => (
                   <li key={item.label}>
-                    <a
-                      href={item.link}
+                    <Link
+                      to={item.link}
                       className="text-2xl block"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -96,13 +97,13 @@ function Header() {
               <ul className="space-y-4">
                 {navigationData.rightNav.map((item) => (
                   <li key={item.label}>
-                    <a
-                      href={item.link}
+                    <Link
+                      to={item.link}
                       className="text-2xl block font-black"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

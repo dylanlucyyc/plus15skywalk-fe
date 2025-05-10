@@ -1,7 +1,11 @@
 import React from "react";
 
 function Map() {
-  return <div>Map</div>;
+  return (
+    <>
+      <title>Plus 15 Skywalk | Map</title>
+    </>
+  );
 }
 
 export default Map;
