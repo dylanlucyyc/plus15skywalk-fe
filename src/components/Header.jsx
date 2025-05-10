@@ -19,7 +19,7 @@ function Header() {
   };
 
   return (
-    <header className="flex w-full font-darker container mx-auto px-2 py-6">
+    <header className="flex w-full font-darker container mx-auto px-4 py-6 flex-shrink-0">
       {/* Logo/Title - Visible on mobile */}
       <div className="md:hidden text-2xl font-black">+15 Skywalk</div>
 

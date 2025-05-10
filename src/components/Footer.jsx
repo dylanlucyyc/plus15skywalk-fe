@@ -5,8 +5,8 @@ import footerImage from "../assets/images/footer-image.png";
 
 function Footer() {
   return (
-    <footer className="py-15 px-2 md:py-10 bg-black text-center md:text-left">
-      <div className="container flex flex-col md:flex-row gap-6  text-white justify-between items-center mx-auto">
+    <footer className="py-15 md:py-10 bg-black text-center md:text-left flex-shrink-0">
+      <div className="container flex flex-col md:flex-row gap-6 text-white justify-between items-center mx-auto px-4">
         <div>
           <div className="mb-6">
             <p className="text-xl mb-2">Let's connect</p>
