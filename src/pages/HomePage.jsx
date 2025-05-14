@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 import HomeHero from "../components/HomeHero";
 import ImageCarousel from "../components/ImageCarousel";
 import LoadingScreen from "../components/LoadingScreen";
-
+import AboutUs from "../components/AboutUs";
+import NewsDisplay from "../components/NewsDisplay";
+import UpcomingEvents from "../components/UpcomingEvents";
 function HomePage() {
   const { isInitialized } = useAuth();
 
@@ -20,8 +22,13 @@ function HomePage() {
         totalImages={8}
         imagesPerView={4}
         imageWidth={300}
-        imageHeight={200}
+        imageHeight={300}
       />
+      <div className="container mx-auto my-12 px-4 flex gap-6">
+        <AboutUs />
+        <NewsDisplay />
+      </div>
+      <UpcomingEvents />
     </>
   );
 }

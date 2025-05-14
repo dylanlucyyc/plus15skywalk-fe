@@ -80,7 +80,7 @@ function ImageCarousel({
   return (
     <div className={`container mx-auto my-12 px-4 ${className}`}>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold">{title}</h2>
+        <h2 className="text-2xl font-bold uppercase">{title}</h2>
         <div className="flex items-center gap-4">
           <span className="text-gray-500 text-sm">
             {currentPage} / {totalPages}
