@@ -27,11 +27,6 @@
       "label": "Subscribe",
       "link": "/subscribe",
       "className": "font-black"
-    },
-    {
-      "label": "Sign In",
-      "link": "/signin",
-      "className": "font-black"
     }
   ]
 }

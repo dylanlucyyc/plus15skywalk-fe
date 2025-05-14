@@ -1,9 +1,18 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import navigationData from "../data/navigation.json";
+import useAuth from "../hooks/useAuth";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout(() => {
+      navigate("/signin");
+    });
+  };
 
   const renderNavItems = (items) => {
     return items.map((item, index) => (
@@ -13,7 +22,7 @@ function Header() {
             {item.label}
           </Link>
         </li>
-        {index < items.length - 1 && <li>|</li>}
+        {index < items.length && <li>|</li>}
       </React.Fragment>
     ));
   };
@@ -30,6 +39,17 @@ function Header() {
 
       <ul className="hidden md:flex gap-[20px] list-none justify-end ml-auto font-black">
         {renderNavItems(navigationData.rightNav)}
+        <li>
+          {isAuthenticated ? (
+            <button onClick={handleLogout} className="font-black">
+              Log out
+            </button>
+          ) : (
+            <Link to="/signin" className="font-black">
+              Sign in
+            </Link>
+          )}
+        </li>
       </ul>
 
       {/* Mobile Burger Button */}
@@ -106,6 +126,33 @@ function Header() {
                     </Link>
                   </li>
                 ))}
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-black mb-4">Account</h3>
+              <ul className="space-y-4">
+                <li>
+                  {isAuthenticated ? (
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setIsMenuOpen(false);
+                      }}
+                      className="text-2xl block font-black w-full"
+                    >
+                      Log out
+                    </button>
+                  ) : (
+                    <Link
+                      to="/signin"
+                      className="text-2xl block font-black"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign in
+                    </Link>
+                  )}
+                </li>
               </ul>
             </div>
           </nav>
