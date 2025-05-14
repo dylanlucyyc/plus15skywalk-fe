@@ -24,7 +24,7 @@ function HomePage() {
         imageWidth={300}
         imageHeight={300}
       />
-      <div className="container mx-auto my-12 px-4 flex gap-6">
+      <div className="container mx-auto my-12 px-4 flex gap-6 md:flex-row flex-col">
         <AboutUs />
         <NewsDisplay />
       </div>

@@ -4,10 +4,12 @@ import Button from "./Button";
 
 function NewsDisplay() {
   return (
-    <div className="w-1/2 flex flex-col gap-6">
+    <div className="w-full md:w-1/2 flex flex-col gap-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold mb-4">+15 SKYWALK NEWS</h2>
-        <Button>View All</Button>
+        <Button as="a" href="/news">
+          View All
+        </Button>
       </div>
       <div className="flex flex-col gap-4 w-full justify-between">
         <NewsCard key="1" />

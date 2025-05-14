@@ -10,19 +10,24 @@ function NewsCard({
   link = "#",
 }) {
   return (
-    <Link to={link}>
-      <div key={key} className="flex gap-4 w-full">
+    <Link
+      to={link}
+      className="block transition-transform hover:-translate-y-1 hover:drop-shadow-[6px_6px_0px_rgba(0,0,0,1)] duration-200"
+    >
+      <div key={key} className="flex gap-4 w-full bg-white p-4 group">
         <img
           src={image}
           width="130"
           height="130"
           alt=""
-          className="flex-shrink-0"
+          className="flex-shrink-0 object-cover"
         />
         <div className="flex-grow min-w-0">
-          <span className="text-normal font-regular uppercase">{category}</span>
+          <span className="text-sm font-semibold uppercase text-gray-600 block mb-1">
+            {category}
+          </span>
           <h3
-            className="text-3xl font-regular"
+            className="text-3xl font-regular transition-colors duration-200"
             style={{
               display: "-webkit-box",
               WebkitLineClamp: 2,
@@ -34,11 +39,11 @@ function NewsCard({
             {title}
           </h3>
         </div>
-        <div className="flex-shrink-0 self-center">
-          <FaArrowRight className="text-xl" />
+        <div className="flex-shrink-0 self-center transition-transform group-hover:translate-x-1 duration-200">
+          <FaArrowRight className="text-xl text-black" />
         </div>
       </div>
-      <span className="w-full border-b border-dashed"></span>
+      <span className="w-full border-b-2 border-dashed transition-colors duration-200"></span>
     </Link>
   );
 }

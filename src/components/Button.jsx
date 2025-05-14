@@ -9,6 +9,8 @@ function Button({
   onClick,
   type = "button",
   disabled = false,
+  as = "button",
+  href,
   ...props
 }) {
   const baseStyles =
@@ -29,10 +31,20 @@ function Button({
     ? "opacity-50 cursor-not-allowed"
     : "cursor-pointer";
 
+  const combinedClassName = `${baseStyles} ${variants[variant]} ${sizes[size]} ${disabledStyles} ${className}`;
+
+  if (as === "a") {
+    return (
+      <a href={href} className={combinedClassName} onClick={onClick} {...props}>
+        {children}
+      </a>
+    );
+  }
+
   return (
     <button
       type={type}
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${disabledStyles} ${className}`}
+      className={combinedClassName}
       onClick={onClick}
       disabled={disabled}
       {...props}
@@ -50,6 +62,8 @@ Button.propTypes = {
   onClick: PropTypes.func,
   type: PropTypes.oneOf(["button", "submit", "reset"]),
   disabled: PropTypes.bool,
+  as: PropTypes.oneOf(["button", "a"]),
+  href: PropTypes.string,
 };
 
 export default Button;

@@ -2,7 +2,7 @@ import React from "react";
 
 function AboutUs() {
   return (
-    <div className="w-1/2 flex flex-col gap-6">
+    <div className="w-full md:w-1/2 flex flex-col gap-6">
       <div>
         <h2 className="text-2xl font-bold mb-4">WHAT IS SKYWALK +15?</h2>
         <p>
