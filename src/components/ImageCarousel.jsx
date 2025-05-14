@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import LoadingScreen from "./LoadingScreen";
 
 function ImageCarousel({
   title = "Image Gallery",
@@ -12,6 +13,10 @@ function ImageCarousel({
 }) {
   // Current starting index
   const [startIndex, setStartIndex] = useState(0);
+  // Track loading state for each image
+  const [loadingStates, setLoadingStates] = useState({});
+  // Track error state for each image
+  const [errorStates, setErrorStates] = useState({});
 
   // Generate image URLs
   const imageUrls = Array.from(
@@ -19,6 +24,21 @@ function ImageCarousel({
     (_, i) =>
       `https://picsum.photos/${imageWidth}/${imageHeight}.${imageFormat}?random=${i}`
   );
+
+  // Get current images to display
+  const currentImages = imageUrls.slice(startIndex, startIndex + imagesPerView);
+
+  // Reset loading states when images change
+  useEffect(() => {
+    const newLoadingStates = {};
+    const newErrorStates = {};
+    for (let i = 0; i < imagesPerView; i++) {
+      newLoadingStates[startIndex + i] = true;
+      newErrorStates[startIndex + i] = false;
+    }
+    setLoadingStates((prev) => ({ ...prev, ...newLoadingStates }));
+    setErrorStates((prev) => ({ ...prev, ...newErrorStates }));
+  }, [startIndex, imagesPerView]);
 
   // Handle navigation
   const handlePrev = () => {
@@ -33,8 +53,25 @@ function ImageCarousel({
     );
   };
 
-  // Get current images to display
-  const currentImages = imageUrls.slice(startIndex, startIndex + imagesPerView);
+  // Image loaded handler
+  const handleImageLoaded = (index) => {
+    setLoadingStates((prev) => ({
+      ...prev,
+      [index]: false,
+    }));
+  };
+
+  // Image error handler
+  const handleImageError = (index) => {
+    setLoadingStates((prev) => ({
+      ...prev,
+      [index]: false,
+    }));
+    setErrorStates((prev) => ({
+      ...prev,
+      [index]: true,
+    }));
+  };
 
   // Calculate pagination indicator
   const currentPage = Math.floor(startIndex / imagesPerView) + 1;
@@ -71,13 +108,38 @@ function ImageCarousel({
         {currentImages.map((url, index) => (
           <div
             key={startIndex + index}
-            className="overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
+            className="overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 relative h-64"
           >
+            {loadingStates[startIndex + index] && (
+              <div className="absolute inset-0 bg-gray-100">
+                <LoadingScreen
+                  fullScreen={false}
+                  variant="spinner"
+                  message=""
+                />
+              </div>
+            )}
+            {errorStates[startIndex + index] && (
+              <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
+                <div className="text-center p-4">
+                  <div className="text-red-500 text-4xl mb-2">!</div>
+                  <p className="text-gray-600">Image failed to load</p>
+                </div>
+              </div>
+            )}
             <img
               src={url}
               alt={`Gallery image ${startIndex + index + 1}`}
-              className="w-full h-64 object-cover"
+              className={`w-full h-64 object-cover ${
+                loadingStates[startIndex + index] ||
+                errorStates[startIndex + index]
+                  ? "opacity-0"
+                  : "opacity-100"
+              }`}
               loading="lazy"
+              onLoad={() => handleImageLoaded(startIndex + index)}
+              onError={() => handleImageError(startIndex + index)}
+              style={{ transition: "opacity 0.3s ease-in-out" }}
             />
           </div>
         ))}

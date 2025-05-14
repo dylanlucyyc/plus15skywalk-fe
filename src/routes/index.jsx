@@ -9,7 +9,6 @@ import SinglePostPage from "../pages/SinglePostPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import UserProfilePage from "../pages/UserProfilePage";
 import Map from "../pages/Map";
-// <AuthRequire>
 function Router() {
   return (
     <Routes>
