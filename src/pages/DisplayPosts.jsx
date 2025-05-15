@@ -1,7 +1,8 @@
 import React from "react";
+import Banner from "../components/Banner";
 
 function DisplayPosts() {
-  return <div>Display Posts</div>;
+  return <Banner />;
 }
 
 export default DisplayPosts;
