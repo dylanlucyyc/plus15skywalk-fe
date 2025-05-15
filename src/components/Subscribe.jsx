@@ -34,12 +34,12 @@ function Subscribe() {
   };
 
   return (
-    <div className="flex container mx-auto justify-between items-center gap-6 py-12">
-      <img src={Illustration} alt="" className="w-1/2" />
+    <div className="flex flex-col px-4 md:flex-row container mx-auto justify-between items-center gap-6 py-12">
+      <img src={Illustration} alt="" className="w-full md:w-1/2" />
       <FormProvider
         methods={methods}
         onSubmit={handleSubmit(onSubmit)}
-        className="w-1/2 flex flex-col gap-4"
+        className="w-full md:w-1/2 flex flex-col gap-4"
       >
         <h2 className="text-6xl font-bold">Join Our Newsletter</h2>
         <div className="flex gap-4">

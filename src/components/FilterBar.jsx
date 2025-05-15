@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { FaSearch } from "react-icons/fa";
 
 function FilterBar({ totalResults = 0, onFilterChange, onSearch, onSort }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,17 +26,17 @@ function FilterBar({ totalResults = 0, onFilterChange, onSearch, onSort }) {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 bg-black">
       <div className="flex flex-wrap gap-4 mb-4">
         <div className="filter-dropdown">
-          <label htmlFor="filter" className="mr-2 font-medium">
+          <label htmlFor="filter" className="mr-2 font-medium text-white">
             Filter by:
           </label>
           <select
             id="filter"
             value={filterOption}
             onChange={handleFilterChange}
-            className="border px-3 py-1.5"
+            className="border px-3 py-1.5 text-white focus:outline-none"
           >
             <option value="all">All</option>
             <option value="completed">Completed</option>
@@ -51,13 +52,13 @@ function FilterBar({ totalResults = 0, onFilterChange, onSearch, onSort }) {
               placeholder="Search..."
               value={searchQuery}
               onChange={handleSearchChange}
-              className="w-full border px-3 py-1.5 pl-8"
+              className="w-full border px-3 py-1.5 pl-8 text-white focus:outline-none"
             />
             <button
               type="submit"
-              className="absolute left-2 top-1/2 transform -translate-y-1/2"
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white"
             >
-              🔍
+              <FaSearch />
             </button>
           </div>
         </form>
@@ -65,18 +66,18 @@ function FilterBar({ totalResults = 0, onFilterChange, onSearch, onSort }) {
 
       <div className="flex flex-wrap justify-between items-center">
         <div className="results-count">
-          <p className="text-gray-600">{totalResults} results found</p>
+          <p className="text-white">{totalResults} results found</p>
         </div>
 
         <div className="sort-dropdown">
-          <label htmlFor="sort" className="mr-2 font-medium">
+          <label htmlFor="sort" className="mr-2 font-medium text-white">
             Sort by:
           </label>
           <select
             id="sort"
             value={sortOption}
             onChange={handleSortChange}
-            className="border px-3 py-1.5"
+            className="border px-3 py-1.5 text-white focus:outline-none"
           >
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option>
