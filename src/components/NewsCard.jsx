@@ -6,7 +6,6 @@ function NewsCard({
   image = `https://picsum.photos/300/300.webp?random=${Math.random()}`,
   category = "Category",
   title = "Name of the news Name of the news Name of the news ews Name of the ne ews Name of the ne",
-  key = "",
   link = "#",
 }) {
   return (
@@ -14,7 +13,7 @@ function NewsCard({
       to={link}
       className="block transition-transform hover:-translate-y-1 hover:drop-shadow-[6px_6px_0px_rgba(0,0,0,1)] duration-200"
     >
-      <div key={key} className="flex gap-4 w-full bg-white p-4 group">
+      <div className="flex gap-4 w-full bg-white p-4 group">
         <img
           src={image}
           width="130"

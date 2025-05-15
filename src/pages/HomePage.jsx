@@ -7,6 +7,7 @@ import LoadingScreen from "../components/LoadingScreen";
 import AboutUs from "../components/AboutUs";
 import NewsDisplay from "../components/NewsDisplay";
 import UpcomingEvents from "../components/UpcomingEvents";
+import Subscribe from "../components/Subscribe";
 function HomePage() {
   const { isInitialized } = useAuth();
 
@@ -29,6 +30,7 @@ function HomePage() {
         <NewsDisplay />
       </div>
       <UpcomingEvents />
+      <Subscribe />
     </>
   );
 }

@@ -12,9 +12,24 @@ function NewsDisplay() {
         </Button>
       </div>
       <div className="flex flex-col gap-4 w-full justify-between">
-        <NewsCard key="1" />
-        <NewsCard key="2" />
-        <NewsCard key="3" />
+        <NewsCard
+          key="1"
+          title="Calgary's +15 network expansion plans announced"
+          category="Development"
+          link="/news/1"
+        />
+        <NewsCard
+          key="2"
+          title="New art installation comes to +15 walkway"
+          category="Culture"
+          link="/news/2"
+        />
+        <NewsCard
+          key="3"
+          title="Winter usage of +15 skywalk reaches record high"
+          category="Community"
+          link="/news/3"
+        />
       </div>
     </div>
   );
