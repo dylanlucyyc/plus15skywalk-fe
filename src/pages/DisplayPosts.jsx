@@ -27,7 +27,7 @@ function DisplayPosts() {
     <>
       <Banner postType={postType} />
       <FilterBar />
-      <Posts currentPage={currentPage} />
+      <Posts currentPage={currentPage} postType={postType} />
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
