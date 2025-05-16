@@ -1,27 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import { updateUserProfile } from "../../features/user/userSlice";
 import { FiX } from "react-icons/fi";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { FTextField, FormProvider } from "../form";
+
+const schema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  avatar_url: Yup.string().url("Must be a valid URL"),
+});
 
 function EditProfileModal({ open, onClose, user }) {
   const dispatch = useDispatch();
-  const [formData, setFormData] = useState({
-    name: user?.name || "",
-    avatar_url: user?.avatar_url || "",
+
+  const methods = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: user?.name || "",
+      avatar_url: user?.avatar_url || "",
+    },
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     try {
-      await dispatch(updateUserProfile({ userId: user._id, ...formData }));
+      await dispatch(updateUserProfile({ userId: user._id, ...data }));
       onClose();
     } catch (error) {
       console.error("Failed to update profile:", error);
@@ -44,51 +48,37 @@ function EditProfileModal({ open, onClose, user }) {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black"
-                required
-              />
-            </div>
+          <FormProvider
+            methods={methods}
+            onSubmit={methods.handleSubmit(onSubmit)}
+          >
+            <div className="space-y-4">
+              <FTextField name="name" label="Name" required />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Avatar URL
-              </label>
-              <input
-                type="url"
+              <FTextField
                 name="avatar_url"
-                value={formData.avatar_url}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black"
+                label="Avatar URL"
+                type="url"
                 placeholder="https://example.com/avatar.jpg"
               />
-            </div>
 
-            <div className="flex justify-end space-x-3 pt-4">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 bg-black text-white hover:bg-gray-800"
-              >
-                Save Changes
-              </button>
+              <div className="flex justify-end space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-black text-white hover:bg-gray-800"
+                >
+                  Save Changes
+                </button>
+              </div>
             </div>
-          </form>
+          </FormProvider>
         </div>
       </div>
     </div>

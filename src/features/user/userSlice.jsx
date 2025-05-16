@@ -69,11 +69,19 @@ export const getUser = (id) => async (dispatch) => {
 };
 
 export const getCurrentUserProfile = () => async (dispatch) => {
+  const token = window.localStorage.getItem("accessToken");
   dispatch(slice.actions.startLoading());
   try {
-    const response = await apiService.get("api/user/me");
-    dispatch(slice.actions.updateUserProfileSuccess(response.data));
+    console.log("Getting current user profile");
+    const response = await apiService.get("api/user/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(response.data);
+    dispatch(slice.actions.getUserSuccess(response.data));
   } catch (error) {
-    dispatch(slice.actions.hasError(error));
+    dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
   }
 };

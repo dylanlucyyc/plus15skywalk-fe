@@ -16,8 +16,6 @@ function UserProfilePage() {
   const { user } = useAuth();
   const [openEditModal, setOpenEditModal] = useState(false);
 
-  console.log(user?._id, userId);
-
   useEffect(() => {
     if (userId) {
       dispatch(getUser(userId));

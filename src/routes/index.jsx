@@ -22,6 +22,7 @@ function Router() {
         <Route path="events/:slug" element={<SinglePostPage />} />
         <Route path="restaurants" element={<DisplayPosts />} />
         <Route path="restaurants/:slug" element={<SinglePostPage />} />
+        <Route path="user/me" element={<UserProfilePage />} />
         <Route path="user/:userId" element={<UserProfilePage />} />
         <Route path="map" element={<Map />} />
         <Route path="*" element={<NotFoundPage />} />
