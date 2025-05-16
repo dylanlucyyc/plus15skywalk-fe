@@ -7,7 +7,7 @@ import LoadingScreen from "../components/LoadingScreen";
 import AboutUs from "../components/AboutUs";
 import NewsDisplay from "../components/NewsDisplay";
 import UpcomingEvents from "../components/UpcomingEvents";
-import Subscribe from "../components/Subscribe";
+import Subscribe from "../features/subscribe/Subscribe";
 function HomePage() {
   const { isInitialized } = useAuth();
 

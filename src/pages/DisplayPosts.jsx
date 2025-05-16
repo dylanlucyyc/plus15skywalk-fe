@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Banner from "../components/Banner";
 import FilterBar from "../components/FilterBar";
-import Subscribe from "../components/Subscribe";
+import Subscribe from "../features/subscribe/Subscribe";
 import Posts from "../components/Posts";
 import Pagination from "../components/Pagination";
 import { useLocation } from "react-router-dom";
