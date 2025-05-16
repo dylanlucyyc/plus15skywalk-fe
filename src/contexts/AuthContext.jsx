@@ -15,7 +15,7 @@ const LOGOUT = "AUTH.LOGOUT";
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case INITIALIZE:
+    case INITIALIZE: {
       const { isAuthenticated, user } = action.payload;
       return {
         ...state,
@@ -23,6 +23,7 @@ const reducer = (state, action) => {
         isAuthenticated,
         user,
       };
+    }
     case LOGIN_SUCCESS:
       return {
         ...state,
@@ -72,6 +73,8 @@ function AuthProvider({ children }) {
           const response = await apiService.get("api/user/me");
           const user = response.data;
 
+          console.log(user);
+
           dispatch({
             type: INITIALIZE,
             payload: { isAuthenticated: true, user },
@@ -102,8 +105,7 @@ function AuthProvider({ children }) {
     const { user, accessToken } = response.data;
 
     setSession(accessToken);
-    dispatch({ type: LOGIN_SUCCESS, payload: { user } });
-
+    dispatch({ type: LOGIN_SUCCESS, payload: user });
     callback();
   };
 
@@ -114,11 +116,8 @@ function AuthProvider({ children }) {
       password,
     });
     const { user, accessToken } = response.data;
-
     setSession(accessToken);
     dispatch({ type: REGISTER_SUCCESS, payload: { user } });
-    console.log({ user, accessToken });
-
     callback();
   };
 

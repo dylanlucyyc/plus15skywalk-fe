@@ -25,15 +25,13 @@ const slice = createSlice({
     updateUserProfileSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
-
-      const updatedUser = action.payload;
-      state.updatedProfile = updatedUser;
+      state.updatedProfile = action.payload;
+      state.selectedUser = action.payload;
     },
 
     getUserSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
-
       state.selectedUser = action.payload;
     },
   },
@@ -41,55 +39,28 @@ const slice = createSlice({
 
 export default slice.reducer;
 
-// export const updateUserProfile =
-//   ({
-//     userId,
-//     name,
-//     avatarUrl,
-//     coverUrl,
-//     aboutMe,
-//     city,
-//     country,
-//     company,
-//     jobTitle,
-//     facebookLink,
-//     instagramLink,
-//     linkedinLink,
-//     twitterLink,
-//   }) =>
-//   async (dispatch) => {
-//     dispatch(slice.actions.startLoading());
-//     try {
-//       const data = {
-//         name,
-//         coverUrl,
-//         aboutMe,
-//         city,
-//         country,
-//         company,
-//         jobTitle,
-//         facebookLink,
-//         instagramLink,
-//         linkedinLink,
-//         twitterLink,
-//       };
-//       if (avatarUrl instanceof File) {
-//         const imageUrl = await cloudinaryUpload(avatarUrl);
-//         data.avatarUrl = imageUrl;
-//       }
-//       const response = await apiService.put(`/users/${userId}`, data);
-//       dispatch(slice.actions.updateUserProfileSuccess(response.data));
-//       toast.success("Update Profile successfully");
-//     } catch (error) {
-//       dispatch(slice.actions.hasError(error.message));
-//       toast.error(error.message);
-//     }
-//   };
+export const updateUserProfile =
+  ({ userId, name, avatar_url }) =>
+  async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await apiService.put(`api/user/${userId}`, {
+        name,
+        avatar_url,
+      });
+      dispatch(slice.actions.updateUserProfileSuccess(response.data));
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      dispatch(slice.actions.hasError(error.message));
+      toast.error(error.message);
+    }
+  };
 
 export const getUser = (id) => async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
-    const response = await apiService.get(`/users/${id}`);
+    const response = await apiService.get(`api/user/${id}`);
+    console.log(response.data);
     dispatch(slice.actions.getUserSuccess(response.data));
   } catch (error) {
     dispatch(slice.actions.hasError(error));
@@ -100,7 +71,7 @@ export const getUser = (id) => async (dispatch) => {
 export const getCurrentUserProfile = () => async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
-    const response = await apiService.get("/users/me");
+    const response = await apiService.get("api/user/me");
     dispatch(slice.actions.updateUserProfileSuccess(response.data));
   } catch (error) {
     dispatch(slice.actions.hasError(error));
