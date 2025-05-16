@@ -25,7 +25,7 @@
     },
     {
       "label": "Subscribe",
-      "link": "/subscribe",
+      "link": "#subscribe",
       "className": "font-black"
     }
   ]

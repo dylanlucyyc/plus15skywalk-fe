@@ -14,11 +14,26 @@ function Header() {
     });
   };
 
+  const handleScrollToSection = (e, link) => {
+    if (link.startsWith("#")) {
+      e.preventDefault();
+      const element = document.querySelector(link);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+        setIsMenuOpen(false); // Close mobile menu after clicking
+      }
+    }
+  };
+
   const renderNavItems = (items) => {
     return items.map((item, index) => (
       <React.Fragment key={item.label}>
         <li>
-          <Link to={item.link} style={{ fontWeight: item.fontWeight }}>
+          <Link
+            to={item.link}
+            style={{ fontWeight: item.fontWeight }}
+            onClick={(e) => handleScrollToSection(e, item.link)}
+          >
             {item.label}
           </Link>
         </li>
@@ -103,7 +118,10 @@ function Header() {
                     <Link
                       to={item.link}
                       className="text-2xl block"
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={(e) => {
+                        handleScrollToSection(e, item.link);
+                        setIsMenuOpen(false);
+                      }}
                     >
                       {item.label}
                     </Link>
@@ -120,7 +138,10 @@ function Header() {
                     <Link
                       to={item.link}
                       className="text-2xl block font-black"
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={(e) => {
+                        handleScrollToSection(e, item.link);
+                        setIsMenuOpen(false);
+                      }}
                     >
                       {item.label}
                     </Link>

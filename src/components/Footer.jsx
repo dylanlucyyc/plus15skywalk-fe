@@ -4,6 +4,16 @@ import navigationData from "../data/navigation.json";
 import footerImage from "../assets/images/footer-image.png";
 
 function Footer() {
+  const handleScrollToSection = (e, link) => {
+    if (link.startsWith("#")) {
+      e.preventDefault();
+      const element = document.querySelector(link);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
   return (
     <footer className="py-15 md:py-10 bg-black text-center md:text-left flex-shrink-0">
       <div className="container flex flex-col md:flex-row gap-6 text-white justify-between items-center mx-auto px-4">
@@ -27,6 +37,7 @@ function Footer() {
                     <Link
                       to={item.link}
                       className="text-gray-300 hover:text-white"
+                      onClick={(e) => handleScrollToSection(e, item.link)}
                     >
                       {item.label}
                     </Link>
@@ -42,6 +53,7 @@ function Footer() {
                     <Link
                       to={item.link}
                       className="text-gray-300 hover:text-white"
+                      onClick={(e) => handleScrollToSection(e, item.link)}
                     >
                       {item.label}
                     </Link>

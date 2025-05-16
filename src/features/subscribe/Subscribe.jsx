@@ -51,7 +51,10 @@ function Subscribe() {
   }, [error, setError]);
 
   return (
-    <div className="flex flex-col px-4 md:flex-row container mx-auto justify-between items-center gap-6 py-12">
+    <div
+      id="subscribe"
+      className="flex flex-col px-4 md:flex-row container mx-auto justify-between items-center gap-6 py-12"
+    >
       <img src={Illustration} alt="" className="w-full md:w-1/2" />
       <FormProvider
         methods={methods}
