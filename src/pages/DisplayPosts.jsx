@@ -1,41 +1,137 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useCallback, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import Banner from "../components/Banner";
 import FilterBar from "../components/FilterBar";
-import Subscribe from "../features/subscribe/Subscribe";
 import Posts from "../components/Posts";
 import Pagination from "../components/Pagination";
-import { useLocation } from "react-router-dom";
+import {
+  setCurrentPage,
+  fetchPosts,
+  setSearchQuery,
+  setFilterOption,
+  setSortOption,
+  selectPostsByType,
+  selectPaginationByType,
+  selectFiltersByType,
+} from "../features/post/postSlice";
 
 function DisplayPosts() {
+  const dispatch = useDispatch();
   const location = useLocation();
-  const [postType, setPostType] = useState(location.pathname);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(10);
 
+  // Extract path and ensure it's one of our valid types
+  const rawPath = location.pathname.split("/")[1];
+  const path = useMemo(() => {
+    // Convert path to a valid post type and ensure it exists
+    // Use a default if the path is not a valid type
+    const validPath = ["news", "events", "restaurants"].includes(rawPath)
+      ? rawPath
+      : "news";
+    return validPath;
+  }, [rawPath]);
+
+  const postType = useMemo(
+    () => path.charAt(0).toUpperCase() + path.slice(1),
+    [path]
+  );
+
+  // Use selective selectors for specific post type to prevent unnecessary rerenders
+  const isLoading = useSelector((state) => state.post.isLoading);
+  const error = useSelector((state) => state.post.error);
+
+  // Get posts and pagination for the current post type only
+  const posts = useSelector((state) => selectPostsByType(state, path));
+  const { currentPage, totalPages } = useSelector((state) =>
+    selectPaginationByType(state, path)
+  );
+  const {
+    searchQuery = "",
+    filterOption = "all",
+    sortOption = "newest",
+  } = useSelector((state) => selectFiltersByType(state, path)) || {};
+
+  // Memoize the fetch parameters object to prevent recreating it on every render
+  const fetchParams = useMemo(
+    () => ({
+      post_type: path,
+      page: currentPage,
+      search: searchQuery,
+      filter: filterOption,
+      sort: sortOption,
+    }),
+    [path, currentPage, searchQuery, filterOption, sortOption]
+  );
+
+  // Fetch posts whenever relevant filters change
   useEffect(() => {
-    const path = location.pathname.split("/")[1];
-    const capitalized = path.charAt(0).toUpperCase() + path.slice(1);
-    setPostType(capitalized);
-  }, [location.pathname]);
+    console.log("DisplayPosts - Dispatching fetchPosts with path:", path);
+    console.log("DisplayPosts - fetchParams:", fetchParams);
+    dispatch(fetchPosts(fetchParams));
+  }, [dispatch, fetchParams]);
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    // Add your logic here to fetch posts for the new page
-  };
+  // Log current state for debugging
+  useEffect(() => {
+    console.log("DisplayPosts - Current state:", {
+      path,
+      posts: posts?.length || 0,
+      currentPage,
+      totalPages,
+      searchQuery,
+      filterOption,
+      sortOption,
+    });
+  }, [
+    path,
+    posts,
+    currentPage,
+    totalPages,
+    searchQuery,
+    filterOption,
+    sortOption,
+  ]);
+
+  const handlePageChange = useCallback(
+    (page) => dispatch(setCurrentPage({ postType: path, page })),
+    [dispatch, path]
+  );
+
+  const handleSearch = useCallback(
+    (query) => dispatch(setSearchQuery({ postType: path, query })),
+    [dispatch, path]
+  );
+
+  const handleFilterChange = useCallback(
+    (filter) => dispatch(setFilterOption({ postType: path, filter })),
+    [dispatch, path]
+  );
+
+  const handleSortChange = useCallback(
+    (sort) => dispatch(setSortOption({ postType: path, sort })),
+    [dispatch, path]
+  );
+
+  if (isLoading && posts.length === 0) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <>
       <Banner postType={postType} />
-      <FilterBar />
-      <Posts currentPage={currentPage} postType={postType} />
+      <FilterBar
+        totalResults={posts?.length || 0}
+        onFilterChange={handleFilterChange}
+        onSearch={handleSearch}
+        onSort={handleSortChange}
+        searchQuery={searchQuery}
+      />
+      <Posts posts={posts} postType={postType} />
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
-      <Subscribe />
     </>
   );
 }
 
-export default DisplayPosts;
+export default React.memo(DisplayPosts);

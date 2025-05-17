@@ -16,4 +16,4 @@ function Banner({ postType }) {
   );
 }
 
-export default Banner;
+export default React.memo(Banner);

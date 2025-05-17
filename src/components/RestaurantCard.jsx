@@ -49,4 +49,4 @@ function RestaurantCard({
   );
 }
 
-export default RestaurantCard;
+export default React.memo(RestaurantCard);

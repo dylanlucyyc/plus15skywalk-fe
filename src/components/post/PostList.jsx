@@ -5,7 +5,10 @@ import { fetchUserPosts } from "../../features/post/postSlice";
 
 function PostList({ userId }) {
   const dispatch = useDispatch();
-  const { posts, isLoading } = useSelector((state) => state.post) || {};
+  const { userPosts, isLoading } = useSelector((state) => ({
+    userPosts: state.post.userPosts || [],
+    isLoading: state.post.isLoading,
+  }));
 
   useEffect(() => {
     if (userId) {
@@ -21,7 +24,7 @@ function PostList({ userId }) {
     );
   }
 
-  if (!posts || posts.length === 0) {
+  if (!userPosts || userPosts.length === 0) {
     return (
       <div className="text-center py-8">
         <p className="text-gray-500">No posts found</p>
@@ -31,7 +34,7 @@ function PostList({ userId }) {
 
   return (
     <div className="space-y-4">
-      {posts.map((post) => (
+      {userPosts.map((post) => (
         <div
           key={post._id}
           className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-shadow"
@@ -57,4 +60,4 @@ function PostList({ userId }) {
   );
 }
 
-export default PostList;
+export default React.memo(PostList);

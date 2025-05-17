@@ -1,13 +1,11 @@
 import React from "react";
 import useAuth from "../hooks/useAuth";
-import { Link } from "react-router-dom";
 import HomeHero from "../components/HomeHero";
 import ImageCarousel from "../components/ImageCarousel";
 import LoadingScreen from "../components/LoadingScreen";
 import AboutUs from "../components/AboutUs";
 import NewsDisplay from "../components/NewsDisplay";
 import UpcomingEvents from "../components/UpcomingEvents";
-import Subscribe from "../features/subscribe/Subscribe";
 function HomePage() {
   const { isInitialized } = useAuth();
 
@@ -30,7 +28,6 @@ function HomePage() {
         <NewsDisplay />
       </div>
       <UpcomingEvents />
-      <Subscribe />
     </>
   );
 }

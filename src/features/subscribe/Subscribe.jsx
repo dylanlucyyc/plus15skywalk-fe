@@ -83,4 +83,4 @@ function Subscribe() {
   );
 }
 
-export default Subscribe;
+export default React.memo(Subscribe);

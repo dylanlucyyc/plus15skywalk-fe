@@ -9,6 +9,8 @@ import SinglePostPage from "../pages/SinglePostPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import UserProfilePage from "../pages/UserProfilePage";
 import Map from "../pages/Map";
+import PostManagementPage from "../pages/PostManagementPage";
+
 function Router() {
   return (
     <Routes>
@@ -25,6 +27,8 @@ function Router() {
         <Route path="user/me" element={<UserProfilePage />} />
         <Route path="user/:userId" element={<UserProfilePage />} />
         <Route path="map" element={<Map />} />
+        <Route path="post/new" element={<PostManagementPage />} />
+        <Route path="post/edit/:postId" element={<PostManagementPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

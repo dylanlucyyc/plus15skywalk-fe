@@ -1,27 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { FaSearch } from "react-icons/fa";
 
-function FilterBar({ totalResults = 0, onFilterChange, onSearch, onSort }) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterOption, setFilterOption] = useState("all");
-  const [sortOption, setSortOption] = useState("newest");
+function FilterBar({
+  totalResults = 0,
+  onFilterChange,
+  onSearch,
+  onSort,
+  searchQuery = "",
+}) {
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
   const handleFilterChange = (e) => {
-    setFilterOption(e.target.value);
     if (onFilterChange) onFilterChange(e.target.value);
   };
 
   const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+    const query = e.target.value;
+    setLocalSearchQuery(query);
   };
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (onSearch) onSearch(searchQuery);
-  };
+  // Debounce search with useEffect
+  const debouncedSearch = useCallback(() => {
+    if (onSearch) onSearch(localSearchQuery);
+  }, [localSearchQuery, onSearch]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      debouncedSearch();
+    }, 500); // 500ms delay after user stops typing
+
+    return () => clearTimeout(timer);
+  }, [debouncedSearch]);
 
   const handleSortChange = (e) => {
-    setSortOption(e.target.value);
     if (onSort) onSort(e.target.value);
   };
 
@@ -34,7 +45,6 @@ function FilterBar({ totalResults = 0, onFilterChange, onSearch, onSort }) {
           </label>
           <select
             id="filter"
-            value={filterOption}
             onChange={handleFilterChange}
             className="border px-3 py-1.5 text-white focus:outline-none"
           >
@@ -45,23 +55,20 @@ function FilterBar({ totalResults = 0, onFilterChange, onSearch, onSort }) {
           </select>
         </div>
 
-        <form onSubmit={handleSearchSubmit} className="search-bar flex-grow">
+        <div className="search-bar flex-grow">
           <div className="relative">
             <input
               type="text"
               placeholder="Search..."
-              value={searchQuery}
+              value={localSearchQuery}
               onChange={handleSearchChange}
               className="w-full border px-3 py-1.5 pl-8 text-white focus:outline-none"
             />
-            <button
-              type="submit"
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white"
-            >
+            <div className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white">
               <FaSearch />
-            </button>
+            </div>
           </div>
-        </form>
+        </div>
       </div>
 
       <div className="flex flex-wrap justify-between items-center">
@@ -75,7 +82,6 @@ function FilterBar({ totalResults = 0, onFilterChange, onSearch, onSort }) {
           </label>
           <select
             id="sort"
-            value={sortOption}
             onChange={handleSortChange}
             className="border px-3 py-1.5 text-white focus:outline-none"
           >
@@ -90,4 +96,4 @@ function FilterBar({ totalResults = 0, onFilterChange, onSearch, onSort }) {
   );
 }
 
-export default FilterBar;
+export default React.memo(FilterBar);

@@ -15,7 +15,7 @@ function FSelect({ name, label, children, ...other }) {
             </label>
           )}
           <select
-            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-colors duration-200 appearance-none bg-white ${
+            className={`w-full px-4 py-2 border focus:outline-none focus:ring-2 focus:ring-black transition-colors duration-200 appearance-none bg-white ${
               error
                 ? "border-red-500 focus:ring-red-500"
                 : "border-gray-300 focus:border-black"

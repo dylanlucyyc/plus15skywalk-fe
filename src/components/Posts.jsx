@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import PropTypes from "prop-types";
 import NewsCard from "./NewsCard";
 import EventCard from "./EventCard";
@@ -6,40 +6,39 @@ import RestaurantCard from "./RestaurantCard";
 
 const POSTS_PER_PAGE = 6;
 
-const Posts = ({ currentPage, postType }) => {
+const Posts = ({ posts, postType }) => {
   const renderContent = () => {
-    const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
-    const endIndex = startIndex + POSTS_PER_PAGE;
+    if (!posts || posts.length === 0) {
+      return (
+        <p className="text-center text-gray-500">
+          No {postType} available at the moment
+        </p>
+      );
+    }
 
     switch (postType.toLowerCase()) {
       case "news":
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <NewsCard />
-            <NewsCard />
-            <NewsCard />
-            <NewsCard />
-            <NewsCard />
+            {posts.map((post) => (
+              <NewsCard key={post._id} post={post} />
+            ))}
           </div>
         );
       case "events":
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <EventCard />
-            <EventCard />
-            <EventCard />
-            <EventCard />
-            <EventCard />
+            {posts.map((post) => (
+              <EventCard key={post._id} post={post} />
+            ))}
           </div>
         );
       case "restaurants":
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <RestaurantCard />
-            <RestaurantCard />
-            <RestaurantCard />
-            <RestaurantCard />
-            <RestaurantCard />
+            {posts.map((post) => (
+              <RestaurantCard key={post._id} post={post} />
+            ))}
           </div>
         );
       default:
@@ -56,8 +55,8 @@ const Posts = ({ currentPage, postType }) => {
 };
 
 Posts.propTypes = {
-  currentPage: PropTypes.number.isRequired,
+  posts: PropTypes.array,
   postType: PropTypes.string.isRequired,
 };
 
-export default Posts;
+export default memo(Posts);
