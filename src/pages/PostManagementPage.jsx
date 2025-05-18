@@ -202,7 +202,7 @@ function PostManagementPage() {
           />
 
           {/* Event-specific fields */}
-          {postType === "event" && (
+          {postType === "events" && (
             <div className="space-y-4 border-t pt-4">
               <h3 className="text-xl font-semibold">Event Details</h3>
               <FTextField
@@ -227,7 +227,7 @@ function PostManagementPage() {
           )}
 
           {/* Restaurant-specific fields */}
-          {postType === "restaurant" && (
+          {postType === "restaurants" && (
             <div className="space-y-4 border-t pt-4">
               <h3 className="text-xl font-semibold">Restaurant Details</h3>
               <div className="grid grid-cols-2 gap-4">
