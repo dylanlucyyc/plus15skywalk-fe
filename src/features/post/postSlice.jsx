@@ -18,9 +18,9 @@ const initialState = {
   currentPost: null,
   // Separate pagination by type
   paginationByType: {
-    news: { currentPage: 1, totalPages: 1 },
-    events: { currentPage: 1, totalPages: 1 },
-    restaurants: { currentPage: 1, totalPages: 1 },
+    news: { currentPage: 1, totalPages: 1, totalCount: 0 },
+    events: { currentPage: 1, totalPages: 1, totalCount: 0 },
+    restaurants: { currentPage: 1, totalPages: 1, totalCount: 0 },
   },
   // Separate filters by type
   filtersByType: {
@@ -43,9 +43,19 @@ const slice = createSlice({
     setCurrentPage: (state, action) => {
       const { postType, page } = action.payload;
       if (!state.paginationByType[postType]) {
-        state.paginationByType[postType] = { currentPage: 1, totalPages: 1 };
+        state.paginationByType[postType] = {
+          currentPage: 1,
+          totalPages: 1,
+          totalCount: 0,
+        };
       }
-      state.paginationByType[postType].currentPage = page;
+
+      // Preserve other pagination properties when changing page
+      const existingPagination = state.paginationByType[postType];
+      state.paginationByType[postType] = {
+        ...existingPagination,
+        currentPage: page,
+      };
     },
     setSearchQuery: (state, action) => {
       const { postType, query } = action.payload;
@@ -57,6 +67,22 @@ const slice = createSlice({
         };
       }
       state.filtersByType[postType].searchQuery = query;
+
+      // Reset to page 1 when search query changes
+      if (!state.paginationByType[postType]) {
+        state.paginationByType[postType] = {
+          currentPage: 1,
+          totalPages: 1,
+          totalCount: 0,
+        };
+      }
+
+      // Preserve other pagination properties when resetting to page 1
+      const existingPagination = state.paginationByType[postType];
+      state.paginationByType[postType] = {
+        ...existingPagination,
+        currentPage: 1,
+      };
     },
     setFilterOption: (state, action) => {
       const { postType, filter } = action.payload;
@@ -68,6 +94,22 @@ const slice = createSlice({
         };
       }
       state.filtersByType[postType].filterOption = filter;
+
+      // Reset to page 1 when filter changes
+      if (!state.paginationByType[postType]) {
+        state.paginationByType[postType] = {
+          currentPage: 1,
+          totalPages: 1,
+          totalCount: 0,
+        };
+      }
+
+      // Preserve other pagination properties when resetting to page 1
+      const existingPagination = state.paginationByType[postType];
+      state.paginationByType[postType] = {
+        ...existingPagination,
+        currentPage: 1,
+      };
     },
     setSortOption: (state, action) => {
       const { postType, sort } = action.payload;
@@ -79,6 +121,22 @@ const slice = createSlice({
         };
       }
       state.filtersByType[postType].sortOption = sort;
+
+      // Reset to page 1 when sort option changes
+      if (!state.paginationByType[postType]) {
+        state.paginationByType[postType] = {
+          currentPage: 1,
+          totalPages: 1,
+          totalCount: 0,
+        };
+      }
+
+      // Preserve other pagination properties when resetting to page 1
+      const existingPagination = state.paginationByType[postType];
+      state.paginationByType[postType] = {
+        ...existingPagination,
+        currentPage: 1,
+      };
     },
   },
   extraReducers: (builder) => {
@@ -169,12 +227,14 @@ const slice = createSlice({
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.isLoading = false;
-        const { postType, posts } = action.payload;
+        const { postType, posts, totalPages, totalCount } = action.payload;
         console.log(
           "fetchPosts.fulfilled - Saving data for postType:",
           postType
         );
         console.log("fetchPosts.fulfilled - Posts:", posts);
+        console.log("fetchPosts.fulfilled - Total Pages:", totalPages);
+        console.log("fetchPosts.fulfilled - Total Count:", totalCount);
 
         // Initialize postsByType[postType] if not already initialized
         if (!state.postsByType[postType]) {
@@ -184,10 +244,16 @@ const slice = createSlice({
 
         // Initialize paginationByType[postType] if not already initialized
         if (!state.paginationByType[postType]) {
-          state.paginationByType[postType] = { currentPage: 1, totalPages: 1 };
+          state.paginationByType[postType] = {
+            currentPage: 1,
+            totalPages: 1,
+            totalCount: 0,
+          };
         }
-        state.paginationByType[postType].totalPages =
-          posts && posts.length ? Math.ceil(posts.length / 10) : 1;
+
+        // Use totalPages from API response instead of calculating locally
+        state.paginationByType[postType].totalPages = totalPages || 1;
+        state.paginationByType[postType].totalCount = totalCount || 0;
 
         // Initialize lastFetched[postType] if not already initialized
         if (!state.lastFetched) {
@@ -281,7 +347,7 @@ export const fetchPosts = createAsyncThunk(
       search,
       filter,
       sort,
-      perPage = 10,
+      perPage = 5,
       forceFetch = false,
     },
     { rejectWithValue, getState }
@@ -298,9 +364,6 @@ export const fetchPosts = createAsyncThunk(
       const postType = post_type;
       const lastFetched = state.post.lastFetched[postType];
 
-      // If we have data and it was fetched recently (< 5 min) and no filter changes, skip the fetch
-      const cacheTime = 5 * 60 * 1000; // 5 minutes in milliseconds
-
       // Add safeguards to handle undefined filtersByType[postType]
       const filtersByTypeForPostType = state.post.filtersByType[postType] || {
         searchQuery: "",
@@ -312,23 +375,38 @@ export const fetchPosts = createAsyncThunk(
       const currentFilterOption = filtersByTypeForPostType.filterOption;
       const currentSortOption = filtersByTypeForPostType.sortOption;
 
+      // IMPORTANT: Always fetch new data when search/filter/sort changes or force fetch is requested
       const shouldUseCachedData =
         !forceFetch &&
         lastFetched &&
-        Date.now() - lastFetched < cacheTime &&
+        Date.now() - lastFetched < 5 * 60 * 1000 && // 5 minutes cache
         search === currentSearchQuery &&
         filter === currentFilterOption &&
         sort === currentSortOption &&
         state.post.postsByType[postType]?.length > 0;
 
       console.log("Should use cached data:", shouldUseCachedData);
+      console.log(
+        "Current search:",
+        search,
+        "State search:",
+        currentSearchQuery
+      );
 
       if (shouldUseCachedData) {
         // Use cached data
         console.log("Using cached data for", postType);
+        const paginationData = state.post.paginationByType[postType] || {
+          currentPage: 1,
+          totalPages: 1,
+          totalCount: 0,
+        };
+
         return {
           postType,
           posts: state.post.postsByType[postType],
+          totalPages: paginationData.totalPages,
+          totalCount: paginationData.totalCount,
         };
       }
 
@@ -355,11 +433,11 @@ export const fetchPosts = createAsyncThunk(
         },
       });
 
-      console.log("API response:", response.data);
-
       return {
         postType,
-        posts: response.data,
+        posts: response.data.posts,
+        totalPages: response.data.totalPages,
+        totalCount: response.data.totalCount,
       };
     } catch (error) {
       console.error("Error fetching posts:", error);

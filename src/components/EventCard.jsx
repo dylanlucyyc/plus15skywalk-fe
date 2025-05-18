@@ -2,20 +2,16 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 
-function EventCard({
-  image = `https://picsum.photos/300/200.webp?random=${Math.random()}`,
-  title = "Event Title",
-  description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula, erat nec suscipit fermentum, neque lectus cursus libero, a porta justo nisi sit amet turpis. Integer nec velit nec nisl malesuada malesuada. Maecenas in turpis non augue interdum",
-  date = "Event Date",
-  location = "Event Location",
-  time = "Event Time",
-  link = "#",
-}) {
+function EventCard({ event }) {
   return (
     <div className="border-1 border-black overflow-hidden">
-      <img src={image} alt="" className="w-full h-48 object-cover border-b-1" />
+      <img
+        src={event?.image}
+        alt={event?.title}
+        className="w-full h-48 object-cover border-b-1"
+      />
       <div className="px-2 py-4">
-        <h2 className="text-3xl font-regular mb-2">{title}</h2>
+        <h2 className="text-3xl font-regular mb-2">{event?.title}</h2>
         <p
           className="font-medium text-lg"
           style={{
@@ -26,20 +22,21 @@ function EventCard({
             textOverflow: "ellipsis",
           }}
         >
-          {description}
+          {event?.event_details?.description}
         </p>
         <p className="font-medium text-lg mt-6 mb-2 border-t-[0.5px] pt-4">
-          <span className="font-bold">Time:</span> {time}
+          <span className="font-bold">Time:</span> {event?.event_details?.date}
         </p>
         <p className="font-medium text-lg mb-2">
-          <span className="font-bold">Date:</span> {date}
+          <span className="font-bold">Date:</span> {event?.event_details?.date}
         </p>
         <p className="font-medium text-lg">
-          <span className="font-bold">Location:</span> {location}
+          <span className="font-bold">Location:</span>{" "}
+          {event?.event_details?.location}
         </p>
       </div>
       <Link
-        to={link}
+        to={`/events/${event?.slug}`}
         className="bg-black px-2 py-4 flex justify-between border-t border-black hover:bg-white group duration-250"
       >
         <span className="inline-block text-center text-white text-xl group-hover:text-black">

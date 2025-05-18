@@ -23,23 +23,27 @@ const postSchema = Yup.object().shape({
   // Event details
   event_details: Yup.object().when("post_type", {
     is: "event",
-    then: Yup.object().shape({
-      date: Yup.date().required("Event date is required"),
-      location: Yup.string().required("Location is required"),
-      description: Yup.string().required("Description is required"),
-    }),
+    then: () =>
+      Yup.object().shape({
+        date: Yup.date().required("Event date is required"),
+        location: Yup.string().required("Location is required"),
+        description: Yup.string().required("Description is required"),
+      }),
+    otherwise: () => Yup.object().notRequired(),
   }),
   // Restaurant details
   restaurant_details: Yup.object().when("post_type", {
     is: "restaurant",
-    then: Yup.object().shape({
-      longitude: Yup.number().required("Longitude is required"),
-      latitude: Yup.number().required("Latitude is required"),
-      price_range: Yup.string().required("Price range is required"),
-      category: Yup.array()
-        .of(Yup.string())
-        .required("At least one category is required"),
-    }),
+    then: () =>
+      Yup.object().shape({
+        longitude: Yup.number().required("Longitude is required"),
+        latitude: Yup.number().required("Latitude is required"),
+        price_range: Yup.string().required("Price range is required"),
+        category: Yup.array()
+          .of(Yup.string())
+          .required("At least one category is required"),
+      }),
+    otherwise: () => Yup.object().notRequired(),
   }),
 });
 
@@ -69,7 +73,7 @@ function PostManagementPage() {
   const { postId } = useParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditMode = Boolean(postId);
-  const [restaurantCategories, setRestaurantCategories] = useState([
+  const [restaurantCategories, _setRestaurantCategories] = useState([
     { _id: "1", name: "Vietnamese" },
     { _id: "2", name: "Japanese" },
     { _id: "3", name: "Korean" },
@@ -85,7 +89,7 @@ function PostManagementPage() {
   const { watch, reset, setValue } = methods;
   const postType = watch("post_type");
   const title = watch("title");
-  const content = watch("content");
+  const _content = watch("content");
 
   // Generate slug from title
   useEffect(() => {
@@ -164,8 +168,8 @@ function PostManagementPage() {
           <FSelect name="post_type" label="Post Type" required>
             <option value="">Select a type</option>
             <option value="news">News</option>
-            <option value="event">Event</option>
-            <option value="restaurant">Restaurant</option>
+            <option value="events">Events</option>
+            <option value="restaurants">Restaurants</option>
           </FSelect>
 
           <FTextField
@@ -215,7 +219,7 @@ function PostManagementPage() {
               <FTextField
                 name="event_details.description"
                 label="Description"
-                multiline
+                multiline={true}
                 rows={3}
                 required
               />

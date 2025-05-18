@@ -6,6 +6,8 @@ function FTextField({
   className = "",
   type = "text",
   endAdornment,
+  multiline,
+  rows = 4,
   ...other
 }) {
   const { control } = useFormContext();
@@ -20,17 +22,30 @@ function FTextField({
             <label className="block font-medium text-black mb-2">{label}</label>
           )}
           <div className="relative">
-            <input
-              type={type}
-              className={`w-full px-4 py-2 border focus:outline-none focus:ring-2 focus:ring-black transition-colors duration-200 ${
-                error
-                  ? "border-red-500 focus:ring-red-500"
-                  : "border-gray-300 focus:border-black"
-              } ${endAdornment ? "pr-12" : ""}`}
-              {...field}
-              {...other}
-            />
-            {endAdornment && (
+            {multiline ? (
+              <textarea
+                rows={rows}
+                className={`w-full px-4 py-2 border focus:outline-none focus:ring-2 focus:ring-black transition-colors duration-200 ${
+                  error
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:border-black"
+                }`}
+                {...field}
+                {...other}
+              />
+            ) : (
+              <input
+                type={type}
+                className={`w-full px-4 py-2 border focus:outline-none focus:ring-2 focus:ring-black transition-colors duration-200 ${
+                  error
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:border-black"
+                } ${endAdornment ? "pr-12" : ""}`}
+                {...field}
+                {...other}
+              />
+            )}
+            {endAdornment && !multiline && (
               <div className="absolute inset-y-0 right-0 flex items-center pr-3">
                 {endAdornment}
               </div>

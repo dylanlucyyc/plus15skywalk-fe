@@ -42,7 +42,7 @@ function DisplayPosts() {
 
   // Get posts and pagination for the current post type only
   const posts = useSelector((state) => selectPostsByType(state, path));
-  const { currentPage, totalPages } = useSelector((state) =>
+  const { currentPage, totalPages, totalCount } = useSelector((state) =>
     selectPaginationByType(state, path)
   );
   const {
@@ -59,6 +59,10 @@ function DisplayPosts() {
       search: searchQuery,
       filter: filterOption,
       sort: sortOption,
+      // Use the same perPage value as in the backend
+      perPage: 5,
+      // Add forceFetch flag when any filter changes
+      forceFetch: true,
     }),
     [path, currentPage, searchQuery, filterOption, sortOption]
   );
@@ -77,6 +81,7 @@ function DisplayPosts() {
       posts: posts?.length || 0,
       currentPage,
       totalPages,
+      totalCount,
       searchQuery,
       filterOption,
       sortOption,
@@ -86,6 +91,7 @@ function DisplayPosts() {
     posts,
     currentPage,
     totalPages,
+    totalCount,
     searchQuery,
     filterOption,
     sortOption,
@@ -97,7 +103,10 @@ function DisplayPosts() {
   );
 
   const handleSearch = useCallback(
-    (query) => dispatch(setSearchQuery({ postType: path, query })),
+    (query) => {
+      console.log("Search query changed to:", query);
+      dispatch(setSearchQuery({ postType: path, query }));
+    },
     [dispatch, path]
   );
 
@@ -118,7 +127,7 @@ function DisplayPosts() {
     <>
       <Banner postType={postType} />
       <FilterBar
-        totalResults={posts?.length || 0}
+        totalResults={totalCount || 0}
         onFilterChange={handleFilterChange}
         onSearch={handleSearch}
         onSort={handleSortChange}

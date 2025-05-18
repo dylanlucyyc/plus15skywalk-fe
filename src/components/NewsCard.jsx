@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 function NewsCard({ post }) {
   return (
     <Link
-      to={post.link}
+      to={`/${post.post_type}/${post.slug}`}
       className="block transition-transform hover:-translate-y-1 hover:drop-shadow-[6px_6px_0px_rgba(0,0,0,1)] duration-200"
     >
       <div className="flex gap-4 w-full bg-white p-4 group">

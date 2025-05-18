@@ -14,7 +14,7 @@ function UpcomingEvents() {
     if (events.length === 0) {
       dispatch(
         fetchPosts({
-          post_type: "event",
+          post_type: "events",
           page: 1,
           search: "",
           filter: "all",
@@ -41,21 +41,9 @@ function UpcomingEvents() {
         </p>
       );
     }
-
     return events
       .slice(0, 3)
-      .map((event) => (
-        <EventCard
-          key={event._id}
-          title={event.title}
-          description={event.content.substring(0, 150) + "..."}
-          date={event.event_details?.date}
-          location={event.event_details?.location}
-          time={new Date(event.event_details?.date).toLocaleTimeString()}
-          link={`/events/${event.slug}`}
-          image={event.image}
-        />
-      ));
+      .map((event, index) => <EventCard event={event} key={index} />);
   };
 
   return (
