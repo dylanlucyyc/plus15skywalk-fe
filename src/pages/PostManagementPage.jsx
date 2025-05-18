@@ -136,6 +136,18 @@ function PostManagementPage() {
               category: post.restaurant_details?.category || [],
             },
           };
+
+          // Format the date to be compatible with datetime-local input
+          if (formattedPost.event_details?.date) {
+            const date = new Date(formattedPost.event_details.date);
+            if (!isNaN(date.getTime())) {
+              // Format as YYYY-MM-DDThh:mm
+              formattedPost.event_details.date = date
+                .toISOString()
+                .slice(0, 16);
+            }
+          }
+
           reset(formattedPost);
         } catch (error) {
           console.error("Error fetching post:", error);
@@ -162,13 +174,22 @@ function PostManagementPage() {
           .map((tag) => tag.trim().replace(/^"|"$/g, "")); // Remove quotes if present
       }
 
+      // If we have an event date, ensure it's properly formatted when sending to the API
+      if (data.event_details?.date) {
+        // Create a Date object from the input value and convert to ISO format
+        const dateObj = new Date(data.event_details.date);
+        if (!isNaN(dateObj.getTime())) {
+          data.event_details.date = dateObj.toISOString();
+        }
+      }
+
       if (isEditMode) {
         await dispatch(updatePost({ postId, postData: data })).unwrap();
       } else {
         await dispatch(createPost(data)).unwrap();
       }
 
-      navigate(`/posts/${data.slug}`);
+      navigate(`/${data.post_type}/${data.slug}`);
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
@@ -229,6 +250,10 @@ function PostManagementPage() {
                 label="Event Date"
                 type="datetime-local"
                 required
+                inputProps={{
+                  // Ensure the date format is compatible with the HTML datetime-local input
+                  pattern: "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}",
+                }}
               />
               <FTextField
                 name="event_details.location"

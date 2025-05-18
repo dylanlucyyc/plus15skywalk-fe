@@ -203,6 +203,20 @@ const slice = createSlice({
         state.error = action.payload;
         toast.error(action.payload);
       })
+      // Get Post By Slug
+      .addCase(getPostBySlug.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getPostBySlug.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.currentPost = action.payload.currentPost;
+      })
+      .addCase(getPostBySlug.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+        toast.error(action.payload);
+      })
       // Fetch User Posts
       .addCase(fetchUserPosts.pending, (state) => {
         state.isLoading = true;
@@ -265,6 +279,36 @@ const slice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
         toast.error(action.payload);
+      })
+      // Delete Post
+      .addCase(deletePost.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.isLoading = false;
+
+        // Check all post types and remove the post from the appropriate array
+        Object.keys(state.postsByType).forEach((postType) => {
+          const index = state.postsByType[postType].findIndex(
+            (post) => post._id === action.payload.postId
+          );
+          if (index !== -1) {
+            state.postsByType[postType].splice(index, 1);
+          }
+        });
+
+        // Clear currentPost if it was the deleted post
+        if (state.currentPost?.post?._id === action.payload.postId) {
+          state.currentPost = null;
+        }
+
+        toast.success("Post deleted successfully");
+      })
+      .addCase(deletePost.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+        toast.error(action.payload);
       });
   },
 });
@@ -306,15 +350,71 @@ export const updatePost = createAsyncThunk(
 
 export const getPost = createAsyncThunk(
   "post/getPost",
-  async (postId, { rejectWithValue }) => {
+  async (slug, { rejectWithValue }) => {
     try {
       const accessToken = window.localStorage.getItem("accessToken");
-      const response = await apiService.get(`api/posts/${postId}`, {
+      const endpoint = `api/posts/${slug}`;
+
+      const response = await apiService.get(endpoint, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
       return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const getPostBySlug = createAsyncThunk(
+  "post/getPostBySlug",
+  async (slug, { rejectWithValue }) => {
+    try {
+      const accessToken = window.localStorage.getItem("accessToken");
+      const endpoint = `api/posts/slug/${slug}`;
+
+      const response = await apiService.get(endpoint, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      return { currentPost: response.data };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deletePost = createAsyncThunk(
+  "post/deletePost",
+  async (postId, { rejectWithValue, getState }) => {
+    try {
+      // Get the post type before deleting
+      const state = getState();
+      let postType = null;
+
+      // Find the post type by checking all posts in all types
+      Object.keys(state.post.postsByType).forEach((type) => {
+        const found = state.post.postsByType[type].find(
+          (post) => post._id === postId
+        );
+        if (found) postType = type;
+      });
+
+      // If we have currentPost and it matches the postId, use its type
+      if (state.post.currentPost?.post?._id === postId) {
+        postType = state.post.currentPost.post.post_type;
+      }
+
+      const accessToken = window.localStorage.getItem("accessToken");
+      await apiService.delete(`api/posts/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      return { postId, postType };
     } catch (error) {
       return rejectWithValue(error.message);
     }

@@ -33,7 +33,7 @@ function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
-
+  const auth = useAuth();
   useEffect(() => {
     if (isInitialized && isAuthenticated) {
       navigate("/user/me", { replace: true });

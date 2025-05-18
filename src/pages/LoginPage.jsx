@@ -23,6 +23,7 @@ const defaultValues = {
 function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const auth = useAuth();
   const { isAuthenticated, isInitialized } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
