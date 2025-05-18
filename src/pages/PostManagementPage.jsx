@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { FTextField, FSelect, FormProvider, FEditor } from "../components/form";
 import { createPost, updatePost, getPost } from "../features/post/postSlice";
+import useAuth from "../hooks/useAuth";
 
 const postSchema = Yup.object().shape({
   post_type: Yup.string().required("Post type is required"),
@@ -80,6 +81,20 @@ function PostManagementPage() {
     { _id: "4", name: "Chinese" },
     { _id: "5", name: "Western" },
   ]);
+
+  // Add authentication check
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    // Redirect to signin page if user is not authenticated
+    if (!isAuthenticated) {
+      navigate("/signin", {
+        state: {
+          from: { pathname: postId ? `/post/edit/${postId}` : "/post/new" },
+        },
+      });
+    }
+  }, [isAuthenticated, navigate, postId]);
 
   const methods = useForm({
     resolver: yupResolver(postSchema),

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -33,6 +33,12 @@ function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
+
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      navigate("/user/me", { replace: true });
+    }
+  }, [auth.isAuthenticated, navigate]);
 
   const methods = useForm({
     resolver: yupResolver(RegisterSchema),

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FTextField, FormProvider } from "../components/form";
 import Button from "../components/Button";
@@ -25,6 +25,13 @@ function LoginPage() {
   const location = useLocation();
   const auth = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      navigate("/user/me", { replace: true });
+    }
+  }, [auth.isAuthenticated, navigate]);
+
   const methods = useForm({
     resolver: yupResolver(LoginSchema),
     defaultValues,
@@ -38,7 +45,7 @@ function LoginPage() {
   } = methods;
 
   const onSubmit = async (data) => {
-    const from = location.state?.form?.pathname || "/";
+    const from = location.state?.from?.pathname || "/";
     let { email, password } = data;
 
     try {
