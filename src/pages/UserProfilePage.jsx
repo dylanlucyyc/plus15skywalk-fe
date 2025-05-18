@@ -9,11 +9,11 @@ import {
   FiFileText,
   FiPlus,
 } from "react-icons/fi";
-import EditProfileModal from "../components/user/EditProfileModal";
+import EditProfileModal from "../features/user/EditProfileModal";
 import LoadingScreen from "../components/LoadingScreen";
-import NewsCard from "../components/NewsCard";
-import EventCard from "../components/EventCard";
-import RestaurantCard from "../components/RestaurantCard";
+import NewsCard from "../features/post/NewsCard";
+import EventCard from "../features/post/EventCard";
+import RestaurantCard from "../features/post/RestaurantCard";
 import { fetchUserPosts } from "../features/post/postSlice";
 import BlankProfile from "../assets/images/blank-profile-picture.webp";
 import useAuth from "../hooks/useAuth";

@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPostBySlug, deletePost } from "../features/post/postSlice";
 import useAuth from "../hooks/useAuth";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
-import EventCard from "../components/EventCard";
-import NewsCard from "../components/NewsCard";
-import RestaurantCard from "../components/RestaurantCard";
+import EventCard from "../features/post/EventCard";
+import NewsCard from "../features/post/NewsCard";
+import RestaurantCard from "../features/post/RestaurantCard";
 import { fDateTime } from "../utils/formatTime";
 
 // Component to display relevant posts based on posttype

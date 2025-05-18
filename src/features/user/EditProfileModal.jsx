@@ -5,7 +5,7 @@ import { FiX } from "react-icons/fi";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { FTextField, FormProvider } from "../form";
+import { FTextField, FormProvider } from "../../components/form";
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Name is required"),

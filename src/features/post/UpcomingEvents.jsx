@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Button from "./Button";
+import Button from "../../components/Button";
 import EventCard from "./EventCard";
-import { fetchPosts, selectPostsByType } from "../features/post/postSlice";
+import { fetchPosts, selectPostsByType } from "./postSlice";
 
 function UpcomingEvents() {
   const dispatch = useDispatch();

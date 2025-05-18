@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { fetchUserPosts } from "../../features/post/postSlice";
+import { fetchUserPosts } from "./postSlice";
 
 function PostList({ userId }) {
   const dispatch = useDispatch();

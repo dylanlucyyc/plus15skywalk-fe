@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import NewsCard from "./NewsCard";
-import Button from "./Button";
-import { fetchPosts, selectPostsByType } from "../features/post/postSlice";
+import Button from "../../components/Button";
+import { fetchPosts, selectPostsByType } from "./postSlice";
 
 function NewsDisplay() {
   const dispatch = useDispatch();

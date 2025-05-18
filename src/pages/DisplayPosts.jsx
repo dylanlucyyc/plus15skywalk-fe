@@ -2,9 +2,9 @@ import React, { useEffect, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import Banner from "../components/Banner";
-import FilterBar from "../components/FilterBar";
-import Posts from "../components/Posts";
-import Pagination from "../components/Pagination";
+import FilterBar from "../features/post/FilterBar";
+import Posts from "../features/post/Posts";
+import Pagination from "../features/post/Pagination";
 import {
   setCurrentPage,
   fetchPosts,

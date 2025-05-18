@@ -4,8 +4,8 @@ import HomeHero from "../components/HomeHero";
 import ImageCarousel from "../components/ImageCarousel";
 import LoadingScreen from "../components/LoadingScreen";
 import AboutUs from "../components/AboutUs";
-import NewsDisplay from "../components/NewsDisplay";
-import UpcomingEvents from "../components/UpcomingEvents";
+import NewsDisplay from "../features/post/NewsDisplay";
+import UpcomingEvents from "../features/post/UpcomingEvents";
 function HomePage() {
   const { isInitialized } = useAuth();
 
