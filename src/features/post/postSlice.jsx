@@ -16,6 +16,7 @@ const initialState = {
     restaurants: [],
   },
   currentPost: null,
+  currentUser: null,
   // Separate pagination by type
   paginationByType: {
     news: { currentPage: 1, totalPages: 1, totalCount: 0 },
@@ -196,7 +197,8 @@ const slice = createSlice({
       })
       .addCase(getPostById.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.currentPost = action.payload;
+        state.currentPost = action.payload.post;
+        state.currentUser = action.payload.currentUser;
       })
       .addCase(getPostById.rejected, (state, action) => {
         state.isLoading = false;
@@ -211,6 +213,7 @@ const slice = createSlice({
       .addCase(getPostBySlug.fulfilled, (state, action) => {
         state.isLoading = false;
         state.currentPost = action.payload.currentPost;
+        state.currentUser = action.payload.currentUser;
       })
       .addCase(getPostBySlug.rejected, (state, action) => {
         state.isLoading = false;
@@ -360,7 +363,27 @@ export const getPostById = createAsyncThunk(
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      return response.data;
+
+      // If we have a valid token, get the current user to compare with post author
+      let currentUser = null;
+      if (accessToken) {
+        try {
+          const userResponse = await apiService.get("api/user/me", {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          currentUser = userResponse.data;
+        } catch (userError) {
+          console.error("Error fetching current user:", userError);
+          // Continue even if we can't get the user
+        }
+      }
+
+      return {
+        post: response.data,
+        currentUser,
+      };
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -374,12 +397,32 @@ export const getPostBySlug = createAsyncThunk(
       const accessToken = window.localStorage.getItem("accessToken");
       const endpoint = `api/posts/slug/${slug}`;
 
+      // First get the post data
       const response = await apiService.get(endpoint, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      return { currentPost: response.data };
+
+      // If we have a valid token, get the current user to compare with post author
+      let currentUser = null;
+      if (accessToken) {
+        try {
+          const userResponse = await apiService.get("api/user/me", {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          currentUser = userResponse.data;
+        } catch (userError) {
+          console.error("Error fetching current user:", userError);
+        }
+      }
+
+      return {
+        currentPost: response.data,
+        currentUser, // Include the current user in the response
+      };
     } catch (error) {
       return rejectWithValue(error.message);
     }

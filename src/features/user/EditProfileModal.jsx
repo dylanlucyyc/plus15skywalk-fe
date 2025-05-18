@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { FTextField, FormProvider } from "../../components/form";
+import useAuth from "../../hooks/useAuth";
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -14,6 +15,7 @@ const schema = Yup.object().shape({
 
 function EditProfileModal({ open, onClose, user }) {
   const dispatch = useDispatch();
+  const { isInitialized } = useAuth();
 
   const methods = useForm({
     resolver: yupResolver(schema),
@@ -33,6 +35,9 @@ function EditProfileModal({ open, onClose, user }) {
   };
 
   if (!open) return null;
+
+  // Don't render anything until auth is initialized
+  if (!isInitialized) return <div>Loading...</div>;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

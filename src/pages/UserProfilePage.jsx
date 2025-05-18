@@ -24,12 +24,20 @@ function UserProfilePage() {
   const navigate = useNavigate();
   const { selectedUser, isLoading: userLoading } =
     useSelector((state) => state.user) || {};
-  const { userPosts, isLoading: postsLoading } = useSelector((state) => ({
+  const {
+    userPosts,
+    isLoading: postsLoading,
+    currentUser: reduxUser,
+  } = useSelector((state) => ({
     userPosts: state.post?.userPosts || [],
     isLoading: state.post?.isLoading,
+    currentUser: state.post?.currentUser,
   }));
-  const { user } = useAuth();
+  const { user, isInitialized } = useAuth();
   const [openEditModal, setOpenEditModal] = useState(false);
+
+  // Use either auth context or Redux for authentication check
+  const authUser = user || reduxUser;
 
   useEffect(() => {
     if (userId) {
@@ -46,7 +54,7 @@ function UserProfilePage() {
     }
   }, [dispatch, selectedUser?._id]);
 
-  if (userLoading) {
+  if (!isInitialized || userLoading) {
     return <LoadingScreen />;
   }
 
@@ -63,7 +71,7 @@ function UserProfilePage() {
   }
 
   const isOwnProfile =
-    !userId || (user && user._id === userId) || userId === "me";
+    !userId || (authUser && authUser._id === userId) || userId === "me";
 
   const renderPostsByType = (posts) => {
     if (postsLoading) {

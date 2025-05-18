@@ -43,12 +43,15 @@ function SinglePostPage() {
   const { user } = useAuth();
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { currentPost, isLoading } = useSelector((state) => ({
+  const { currentPost, currentUser, isLoading } = useSelector((state) => ({
     currentPost: state.post.currentPost,
+    currentUser: state.post.currentUser,
     isLoading: state.post.isLoading,
   }));
 
-  console.log(currentPost);
+  console.log("Auth user:", user);
+  console.log("Redux user:", currentUser);
+  console.log("Current post:", currentPost);
 
   useEffect(() => {
     if (slug) {
@@ -69,11 +72,16 @@ function SinglePostPage() {
     }
   };
 
+  // Don't render until post data is loaded
   if (isLoading || isDeleting) return <div>Loading...</div>;
   if (!currentPost) return <div>Post not found</div>;
 
   // Check if the current user is the author of the post
-  const isAuthor = user && currentPost?.post?.posted_by?._id === user._id;
+  // Try both auth context user and Redux currentUser
+  const authUser = user || currentUser;
+  const isAuthor =
+    authUser && currentPost?.post?.posted_by?._id === authUser._id;
+
   const postType = currentPost?.post?.post_type;
   const relevantPosts = currentPost?.relevantPosts || [];
 

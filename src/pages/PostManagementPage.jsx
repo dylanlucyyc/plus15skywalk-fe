@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { FTextField, FSelect, FormProvider, FEditor } from "../components/form";
 import {
@@ -88,19 +88,23 @@ function PostManagementPage() {
 
   // Add authentication check
   const { isAuthenticated, isInitialized } = useAuth();
+  const { currentUser } = useSelector((state) => state.post);
 
-  console.log(isAuthenticated, isInitialized);
+  // Use either auth context or Redux for authentication check
+  const isUserAuthenticated = isAuthenticated || !!currentUser;
+
+  console.log(isAuthenticated, isInitialized, currentUser);
 
   useEffect(() => {
     // Redirect to signin page if user is not authenticated
-    if (isInitialized && !isAuthenticated) {
+    if (isInitialized && !isUserAuthenticated) {
       navigate("/signin", {
         state: {
           from: { pathname: postId ? `/post/edit/${postId}` : "/post/new" },
         },
       });
     }
-  }, [isInitialized, isAuthenticated, navigate, postId]);
+  }, [isInitialized, isUserAuthenticated, navigate, postId]);
 
   const methods = useForm({
     resolver: yupResolver(postSchema),
