@@ -8,16 +8,13 @@ import DisplayPosts from "../pages/DisplayPosts";
 import SinglePostPage from "../pages/SinglePostPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import UserProfilePage from "../pages/UserProfilePage";
-import Map from "../pages/Map";
 import PostManagementPage from "../pages/PostManagementPage";
-
+import NoSubscribeLayout from "../layouts/NoSubscribeLayout";
 function Router() {
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="signin" element={<LoginPage />} />
-        <Route path="signup" element={<RegisterPage />} />
         <Route path="news" element={<DisplayPosts />} />
         <Route path="news/:slug" element={<SinglePostPage />} />
         <Route path="events" element={<DisplayPosts />} />
@@ -26,9 +23,12 @@ function Router() {
         <Route path="restaurants/:slug" element={<SinglePostPage />} />
         <Route path="user/me" element={<UserProfilePage />} />
         <Route path="user/:userId" element={<UserProfilePage />} />
-        <Route path="map" element={<Map />} />
         <Route path="post/new" element={<PostManagementPage />} />
         <Route path="post/edit/:postId" element={<PostManagementPage />} />
+      </Route>
+      <Route path="/" element={<NoSubscribeLayout />}>
+        <Route path="signin" element={<LoginPage />} />
+        <Route path="signup" element={<RegisterPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

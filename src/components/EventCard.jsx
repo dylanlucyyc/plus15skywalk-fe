@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
+import { format } from "date-fns";
 
 function EventCard({ event }) {
   return (
@@ -25,10 +26,8 @@ function EventCard({ event }) {
           {event?.event_details?.description}
         </p>
         <p className="font-medium text-lg mt-6 mb-2 border-t-[0.5px] pt-4">
-          <span className="font-bold">Time:</span> {event?.event_details?.date}
-        </p>
-        <p className="font-medium text-lg mb-2">
-          <span className="font-bold">Date:</span> {event?.event_details?.date}
+          <span className="font-bold">Date & Time:</span>{" "}
+          {format(new Date(event?.event_details?.date), "MMM d, yyyy h:mm a")}
         </p>
         <p className="font-medium text-lg">
           <span className="font-bold">Location:</span>{" "}

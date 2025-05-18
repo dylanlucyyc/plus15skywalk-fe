@@ -11,7 +11,10 @@ import {
 } from "react-icons/fi";
 import EditProfileModal from "../components/user/EditProfileModal";
 import LoadingScreen from "../components/LoadingScreen";
-import PostList from "../components/post/PostList";
+import NewsCard from "../components/NewsCard";
+import EventCard from "../components/EventCard";
+import RestaurantCard from "../components/RestaurantCard";
+import { fetchUserPosts } from "../features/post/postSlice";
 import BlankProfile from "../assets/images/blank-profile-picture.webp";
 import useAuth from "../hooks/useAuth";
 
@@ -19,7 +22,12 @@ function UserProfilePage() {
   const { userId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { selectedUser, isLoading } = useSelector((state) => state.user) || {};
+  const { selectedUser, isLoading: userLoading } =
+    useSelector((state) => state.user) || {};
+  const { userPosts, isLoading: postsLoading } = useSelector((state) => ({
+    userPosts: state.post?.userPosts || [],
+    isLoading: state.post?.isLoading,
+  }));
   const { user } = useAuth();
   const [openEditModal, setOpenEditModal] = useState(false);
 
@@ -31,7 +39,14 @@ function UserProfilePage() {
     }
   }, [dispatch, userId]);
 
-  if (isLoading) {
+  useEffect(() => {
+    console.log("here");
+    if (selectedUser?._id) {
+      dispatch(fetchUserPosts(selectedUser._id));
+    }
+  }, [dispatch, selectedUser?._id]);
+
+  if (userLoading) {
     return <LoadingScreen />;
   }
 
@@ -49,6 +64,68 @@ function UserProfilePage() {
 
   const isOwnProfile =
     !userId || (user && user._id === userId) || userId === "me";
+
+  const renderPostsByType = (posts) => {
+    if (postsLoading) {
+      return (
+        <div className="flex justify-center items-center h-32">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        </div>
+      );
+    }
+
+    if (!posts || posts.length === 0) {
+      return (
+        <div className="text-center py-8">
+          <p className="text-gray-500">No posts found</p>
+        </div>
+      );
+    }
+
+    // Group posts by type
+    const newsPosts = posts.filter((post) => post.post_type === "news");
+    const eventPosts = posts.filter((post) => post.post_type === "events");
+    const restaurantPosts = posts.filter(
+      (post) => post.post_type === "restaurants"
+    );
+
+    return (
+      <div className="space-y-8">
+        {newsPosts.length > 0 && (
+          <div>
+            <h4 className="text-lg font-semibold mb-4">News</h4>
+            <div className="flex flex-col gap-4">
+              {newsPosts.map((post) => (
+                <NewsCard key={post._id} post={post} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {eventPosts.length > 0 && (
+          <div>
+            <h4 className="text-lg font-semibold mb-4">Events</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {eventPosts.map((post) => (
+                <EventCard key={post._id} event={post} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {restaurantPosts.length > 0 && (
+          <div>
+            <h4 className="text-lg font-semibold mb-4">Restaurants</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {restaurantPosts.map((post) => (
+                <RestaurantCard key={post._id} post={post} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -97,11 +174,9 @@ function UserProfilePage() {
         </div>
 
         {/* Posts Section */}
-
         <div className="md:col-span-2">
           <div className="bg-white shadow-md p-6 mb-4">
             <h3 className="text-xl font-semibold mb-4">Favorites</h3>
-            {/* Favorite posts - to be implemented */}
             <div className="text-center py-4">
               <p className="text-gray-500">No favorites yet</p>
             </div>
@@ -109,6 +184,7 @@ function UserProfilePage() {
 
           <div className="bg-white shadow-md p-6">
             <h3 className="text-xl font-semibold mb-4">Posts</h3>
+            {renderPostsByType(userPosts)}
           </div>
         </div>
       </div>

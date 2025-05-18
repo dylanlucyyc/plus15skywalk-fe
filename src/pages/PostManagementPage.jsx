@@ -134,23 +134,18 @@ function PostManagementPage() {
           // Convert tags array to string
           const formattedPost = {
             ...post,
-            tags: post.tags?.join(", ") || "",
+            tags: post?.tags?.join(", ") || "",
             restaurant_details: {
-              ...post.restaurant_details,
-              category: post.restaurant_details?.category || [],
+              ...post?.restaurant_details,
+              category: post?.restaurant_details?.category || [],
+            },
+            event_details: {
+              ...post?.event_details,
+              date: post?.event_details?.date
+                ? new Date(post?.event_details?.date).toISOString().slice(0, 16)
+                : "",
             },
           };
-
-          // Format the date to be compatible with datetime-local input
-          if (formattedPost.event_details?.date) {
-            const date = new Date(formattedPost.event_details.date);
-            if (!isNaN(date.getTime())) {
-              // Format as YYYY-MM-DDThh:mm
-              formattedPost.event_details.date = date
-                .toISOString()
-                .slice(0, 16);
-            }
-          }
 
           reset(formattedPost);
         } catch (error) {
@@ -255,7 +250,6 @@ function PostManagementPage() {
                 type="datetime-local"
                 required
                 inputProps={{
-                  // Ensure the date format is compatible with the HTML datetime-local input
                   pattern: "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}",
                 }}
               />

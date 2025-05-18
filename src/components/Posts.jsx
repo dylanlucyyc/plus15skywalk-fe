@@ -4,8 +4,6 @@ import NewsCard from "./NewsCard";
 import EventCard from "./EventCard";
 import RestaurantCard from "./RestaurantCard";
 
-const POSTS_PER_PAGE = 6;
-
 const Posts = ({ posts, postType }) => {
   const renderContent = () => {
     if (!posts || posts.length === 0) {
