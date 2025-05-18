@@ -189,16 +189,16 @@ const slice = createSlice({
         state.error = action.payload;
         toast.error(action.payload);
       })
-      // Get Post
-      .addCase(getPost.pending, (state) => {
+      // Get Post By Id
+      .addCase(getPostById.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(getPost.fulfilled, (state, action) => {
+      .addCase(getPostById.fulfilled, (state, action) => {
         state.isLoading = false;
         state.currentPost = action.payload;
       })
-      .addCase(getPost.rejected, (state, action) => {
+      .addCase(getPostById.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
         toast.error(action.payload);
@@ -348,12 +348,12 @@ export const updatePost = createAsyncThunk(
   }
 );
 
-export const getPost = createAsyncThunk(
-  "post/getPost",
-  async (slug, { rejectWithValue }) => {
+export const getPostById = createAsyncThunk(
+  "post/getPostById",
+  async (postId, { rejectWithValue }) => {
     try {
       const accessToken = window.localStorage.getItem("accessToken");
-      const endpoint = `api/posts/${slug}`;
+      const endpoint = `api/posts/${postId}`;
 
       const response = await apiService.get(endpoint, {
         headers: {

@@ -54,6 +54,16 @@ function Header() {
 
       <ul className="hidden md:flex gap-[20px] list-none justify-end ml-auto font-black">
         {renderNavItems(navigationData.rightNav)}
+        {isAuthenticated && (
+          <>
+            <li>
+              <Link to="/user/me" className="font-black">
+                My Profile
+              </Link>
+            </li>
+            <li>|</li>
+          </>
+        )}
         <li>
           {isAuthenticated ? (
             <button onClick={handleLogout} className="font-black">
@@ -153,6 +163,17 @@ function Header() {
             <div>
               <h3 className="text-xl font-black mb-4">Account</h3>
               <ul className="space-y-4">
+                {isAuthenticated && (
+                  <li>
+                    <Link
+                      to="/user/me"
+                      className="text-2xl block font-black"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      My Profile
+                    </Link>
+                  </li>
+                )}
                 <li>
                   {isAuthenticated ? (
                     <button

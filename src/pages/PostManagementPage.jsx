@@ -5,7 +5,11 @@ import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { FTextField, FSelect, FormProvider, FEditor } from "../components/form";
-import { createPost, updatePost, getPost } from "../features/post/postSlice";
+import {
+  createPost,
+  updatePost,
+  getPostById,
+} from "../features/post/postSlice";
 import useAuth from "../hooks/useAuth";
 
 const postSchema = Yup.object().shape({
@@ -124,7 +128,7 @@ function PostManagementPage() {
     if (isEditMode) {
       const fetchPost = async () => {
         try {
-          const post = await dispatch(getPost(postId)).unwrap();
+          const post = await dispatch(getPostById(postId)).unwrap();
 
           console.log(post);
           // Convert tags array to string

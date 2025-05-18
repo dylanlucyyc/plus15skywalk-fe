@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, getCurrentUserProfile } from "../features/user/userSlice";
-import { FiEdit2, FiMapPin, FiBriefcase, FiFileText } from "react-icons/fi";
+import {
+  FiEdit2,
+  FiMapPin,
+  FiBriefcase,
+  FiFileText,
+  FiPlus,
+} from "react-icons/fi";
 import EditProfileModal from "../components/user/EditProfileModal";
 import LoadingScreen from "../components/LoadingScreen";
 import PostList from "../components/post/PostList";
@@ -12,6 +18,7 @@ import useAuth from "../hooks/useAuth";
 function UserProfilePage() {
   const { userId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { selectedUser, isLoading } = useSelector((state) => state.user) || {};
   const { user } = useAuth();
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -60,13 +67,22 @@ function UserProfilePage() {
             <p className="text-gray-600 mb-4">{selectedUser?.email}</p>
 
             {isOwnProfile && (
-              <button
-                onClick={() => setOpenEditModal(true)}
-                className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors mb-4"
-              >
-                <FiEdit2 className="mr-2" />
-                Edit Profile
-              </button>
+              <div className="flex gap-2 mb-4">
+                <button
+                  onClick={() => setOpenEditModal(true)}
+                  className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  <FiEdit2 className="mr-2" />
+                  Edit Profile
+                </button>
+                <button
+                  onClick={() => navigate("/post/new")}
+                  className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  <FiPlus className="mr-2" />
+                  Make Post
+                </button>
+              </div>
             )}
 
             <div className="w-full border-t border-gray-200 my-4" />
@@ -85,12 +101,14 @@ function UserProfilePage() {
         <div className="md:col-span-2">
           <div className="bg-white shadow-md p-6 mb-4">
             <h3 className="text-xl font-semibold mb-4">Favorites</h3>
-            {/* Favorite posts */}
+            {/* Favorite posts - to be implemented */}
+            <div className="text-center py-4">
+              <p className="text-gray-500">No favorites yet</p>
+            </div>
           </div>
 
           <div className="bg-white shadow-md p-6">
             <h3 className="text-xl font-semibold mb-4">Posts</h3>
-            {/* Posts */}
           </div>
         </div>
       </div>
