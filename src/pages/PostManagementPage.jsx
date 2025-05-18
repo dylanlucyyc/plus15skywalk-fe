@@ -27,7 +27,7 @@ const postSchema = Yup.object().shape({
     ),
   // Event details
   event_details: Yup.object().when("post_type", {
-    is: "event",
+    is: "events",
     then: () =>
       Yup.object().shape({
         date: Yup.date().required("Event date is required"),
@@ -38,15 +38,14 @@ const postSchema = Yup.object().shape({
   }),
   // Restaurant details
   restaurant_details: Yup.object().when("post_type", {
-    is: "restaurant",
+    is: "restaurants",
     then: () =>
       Yup.object().shape({
         longitude: Yup.number().required("Longitude is required"),
         latitude: Yup.number().required("Latitude is required"),
+        address: Yup.string().required("Address is required"),
+        opening_hours: Yup.string().required("Opening hours are required"),
         price_range: Yup.string().required("Price range is required"),
-        category: Yup.array()
-          .of(Yup.string())
-          .required("At least one category is required"),
       }),
     otherwise: () => Yup.object().notRequired(),
   }),
@@ -67,8 +66,9 @@ const defaultValues = {
   restaurant_details: {
     longitude: "",
     latitude: "",
+    address: "",
+    opening_hours: "",
     price_range: "",
-    category: [],
   },
 };
 
@@ -78,13 +78,6 @@ function PostManagementPage() {
   const { postId } = useParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditMode = Boolean(postId);
-  const [restaurantCategories, _setRestaurantCategories] = useState([
-    { _id: "1", name: "Vietnamese" },
-    { _id: "2", name: "Japanese" },
-    { _id: "3", name: "Korean" },
-    { _id: "4", name: "Chinese" },
-    { _id: "5", name: "Western" },
-  ]);
 
   // Add authentication check
   const { isAuthenticated, isInitialized } = useAuth();
@@ -92,8 +85,6 @@ function PostManagementPage() {
 
   // Use either auth context or Redux for authentication check
   const isUserAuthenticated = isAuthenticated || !!currentUser;
-
-  console.log(isAuthenticated, isInitialized, currentUser);
 
   useEffect(() => {
     // Redirect to signin page if user is not authenticated
@@ -116,6 +107,25 @@ function PostManagementPage() {
   const title = watch("title");
   const _content = watch("content");
 
+  // Initialize specific fields when post type changes
+  useEffect(() => {
+    if (postType === "restaurants" && !isEditMode) {
+      // Make sure restaurant_details is initialized
+      const currentRestaurantDetails =
+        methods.getValues("restaurant_details") || {};
+      console.log("Initializing restaurant details:", currentRestaurantDetails);
+
+      // Set default values if they're not already set
+      setValue("restaurant_details", {
+        longitude: currentRestaurantDetails.longitude || "",
+        latitude: currentRestaurantDetails.latitude || "",
+        address: currentRestaurantDetails.address || "",
+        opening_hours: currentRestaurantDetails.opening_hours || "",
+        price_range: currentRestaurantDetails.price_range || "",
+      });
+    }
+  }, [postType, isEditMode, setValue]);
+
   // Generate slug from title
   useEffect(() => {
     if (title && !isEditMode) {
@@ -132,16 +142,20 @@ function PostManagementPage() {
     if (isEditMode) {
       const fetchPost = async () => {
         try {
-          const post = await dispatch(getPostById(postId)).unwrap();
+          const { post } = await dispatch(getPostById(postId)).unwrap();
 
           console.log(post);
           // Convert tags array to string
           const formattedPost = {
             ...post,
-            tags: post?.tags?.join(", ") || "",
+            tags: post?.tags || "",
             restaurant_details: {
               ...post?.restaurant_details,
-              category: post?.restaurant_details?.category || [],
+              price_range: post?.restaurant_details?.price_range || "",
+              longitude: post?.restaurant_details?.longitude || "",
+              latitude: post?.restaurant_details?.latitude || "",
+              address: post?.restaurant_details?.address || "",
+              opening_hours: post?.restaurant_details?.opening_hours || "",
             },
             event_details: {
               ...post?.event_details,
@@ -165,17 +179,16 @@ function PostManagementPage() {
     try {
       setIsSubmitting(true);
 
+      console.log("Form data before processing:", data);
+      console.log("Post type:", data.post_type);
+      console.log("Restaurant details:", data.restaurant_details);
+
       // Ensure slug is not null or empty
       if (!data.slug) {
         throw new Error("Slug is required");
       }
 
-      // Convert tags string to array and clean up
-      if (data.tags) {
-        data.tags = data.tags
-          .split(",")
-          .map((tag) => tag.trim().replace(/^"|"$/g, "")); // Remove quotes if present
-      }
+      // Tags are now sent as a simple string, no conversion needed
 
       // If we have an event date, ensure it's properly formatted when sending to the API
       if (data.event_details?.date) {
@@ -184,6 +197,15 @@ function PostManagementPage() {
         if (!isNaN(dateObj.getTime())) {
           data.event_details.date = dateObj.toISOString();
         }
+      }
+
+      // Fix for MongoDB ObjectId cast error with categories
+      if (data.post_type === "restaurants" && data.restaurant_details) {
+        console.log("Original restaurant details:", data.restaurant_details);
+        console.log(
+          "Final restaurant details:",
+          JSON.stringify(data.restaurant_details)
+        );
       }
 
       if (isEditMode) {
@@ -240,7 +262,6 @@ function PostManagementPage() {
             name="slug"
             label="Slug"
             placeholder="your-post-slug"
-            helperText="URL-friendly version of your post title (auto-generated, but can be edited)"
             required
           />
 
@@ -292,6 +313,17 @@ function PostManagementPage() {
                   required
                 />
               </div>
+              <FTextField
+                name="restaurant_details.address"
+                label="Address"
+                required
+              />
+              <FTextField
+                name="restaurant_details.opening_hours"
+                label="Opening Hours"
+                placeholder="e.g., Mon-Fri: 9AM-10PM, Sat-Sun: 10AM-11PM"
+                required
+              />
               <FSelect
                 name="restaurant_details.price_range"
                 label="Price Range"
@@ -303,47 +335,6 @@ function PostManagementPage() {
                 <option value="$$$">$$$</option>
                 <option value="$$$$">$$$$</option>
               </FSelect>
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  Categories
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {restaurantCategories.map((category) => (
-                    <label
-                      key={category._id}
-                      className="flex items-center space-x-2"
-                    >
-                      <input
-                        type="checkbox"
-                        value={category._id}
-                        onChange={(e) => {
-                          const currentCategories =
-                            methods.getValues("restaurant_details.category") ||
-                            [];
-                          if (e.target.checked) {
-                            methods.setValue("restaurant_details.category", [
-                              ...currentCategories,
-                              category._id,
-                            ]);
-                          } else {
-                            methods.setValue(
-                              "restaurant_details.category",
-                              currentCategories.filter(
-                                (id) => id !== category._id
-                              )
-                            );
-                          }
-                        }}
-                        checked={methods
-                          .watch("restaurant_details.category")
-                          ?.includes(category._id)}
-                        className="rounded border-gray-300 text-black focus:ring-black"
-                      />
-                      <span>{category.name}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
             </div>
           )}
 

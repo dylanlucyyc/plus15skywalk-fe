@@ -23,12 +23,12 @@ function Router() {
         <Route path="restaurants/:slug" element={<SinglePostPage />} />
         <Route path="user/me" element={<UserProfilePage />} />
         <Route path="user/:userId" element={<UserProfilePage />} />
-        <Route path="post/new" element={<PostManagementPage />} />
-        <Route path="post/edit/:postId" element={<PostManagementPage />} />
       </Route>
       <Route path="/" element={<NoSubscribeLayout />}>
         <Route path="signin" element={<LoginPage />} />
         <Route path="signup" element={<RegisterPage />} />
+        <Route path="post/new" element={<PostManagementPage />} />
+        <Route path="post/edit/:postId" element={<PostManagementPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

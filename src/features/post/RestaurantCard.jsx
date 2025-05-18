@@ -30,7 +30,7 @@ function RestaurantCard({ post }) {
         </p>
         <p className="font-medium text-lg mb-2">
           <span className="font-bold">Operating Hours:</span>{" "}
-          {post?.restaurant_details?.operatingHours}
+          {post?.restaurant_details?.opening_hours}
         </p>
       </div>
       <Link

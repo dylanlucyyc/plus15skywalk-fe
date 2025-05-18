@@ -94,7 +94,7 @@ function SinglePostPage() {
       />
       <div className="flex justify-between items-center mb-4">
         <span className="bg-[#1EB8CC] text-white px-4 py-2 inline-block">
-          {currentPost?.post?.tags[0]}
+          {currentPost?.post?.tags}
         </span>
         {isAuthor && (
           <div className="flex gap-2">
