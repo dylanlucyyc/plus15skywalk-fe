@@ -25,7 +25,6 @@ const postSchema = Yup.object().shape({
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
       "Slug must be URL-friendly (lowercase letters, numbers, and hyphens only)"
     ),
-  // Event details
   event_details: Yup.object().when("post_type", {
     is: "events",
     then: () =>
@@ -36,7 +35,6 @@ const postSchema = Yup.object().shape({
       }),
     otherwise: () => Yup.object().notRequired(),
   }),
-  // Restaurant details
   restaurant_details: Yup.object().when("post_type", {
     is: "restaurants",
     then: () =>
@@ -79,15 +77,11 @@ function PostManagementPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditMode = Boolean(postId);
 
-  // Add authentication check
   const { isAuthenticated, isInitialized } = useAuth();
-  const { currentUser } = useSelector((state) => state.post);
-
-  // Use either auth context or Redux for authentication check
+  const { currentUser, error } = useSelector((state) => state.post);
   const isUserAuthenticated = isAuthenticated || !!currentUser;
 
   useEffect(() => {
-    // Redirect to signin page if user is not authenticated
     if (isInitialized && !isUserAuthenticated) {
       navigate("/signin", {
         state: {
@@ -102,20 +96,32 @@ function PostManagementPage() {
     defaultValues,
   });
 
-  const { watch, reset, setValue } = methods;
+  const {
+    watch,
+    reset,
+    setValue,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = methods;
+
   const postType = watch("post_type");
   const title = watch("title");
   const _content = watch("content");
 
-  // Initialize specific fields when post type changes
+  useEffect(() => {
+    if (error) {
+      setError("responseError", {
+        type: "manual",
+        message: error || "Failed to save post",
+      });
+    }
+  }, [error, setError]);
+
   useEffect(() => {
     if (postType === "restaurants" && !isEditMode) {
-      // Make sure restaurant_details is initialized
       const currentRestaurantDetails =
         methods.getValues("restaurant_details") || {};
-      console.log("Initializing restaurant details:", currentRestaurantDetails);
-
-      // Set default values if they're not already set
       setValue("restaurant_details", {
         longitude: currentRestaurantDetails.longitude || "",
         latitude: currentRestaurantDetails.latitude || "",
@@ -126,14 +132,13 @@ function PostManagementPage() {
     }
   }, [postType, isEditMode, setValue]);
 
-  // Generate slug from title
   useEffect(() => {
     if (title && !isEditMode) {
       const generatedSlug = title
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "")
-        .substring(0, 100); // Limit length
+        .substring(0, 100);
       setValue("slug", generatedSlug);
     }
   }, [title, setValue, isEditMode]);
@@ -143,9 +148,6 @@ function PostManagementPage() {
       const fetchPost = async () => {
         try {
           const { post } = await dispatch(getPostById(postId)).unwrap();
-
-          console.log(post);
-          // Convert tags array to string
           const formattedPost = {
             ...post,
             tags: post?.tags || "",
@@ -164,7 +166,6 @@ function PostManagementPage() {
                 : "",
             },
           };
-
           reset(formattedPost);
         } catch (error) {
           console.error("Error fetching post:", error);
@@ -178,34 +179,17 @@ function PostManagementPage() {
   const onSubmit = async (data) => {
     try {
       setIsSubmitting(true);
+      clearErrors("responseError");
 
-      console.log("Form data before processing:", data);
-      console.log("Post type:", data.post_type);
-      console.log("Restaurant details:", data.restaurant_details);
-
-      // Ensure slug is not null or empty
       if (!data.slug) {
         throw new Error("Slug is required");
       }
 
-      // Tags are now sent as a simple string, no conversion needed
-
-      // If we have an event date, ensure it's properly formatted when sending to the API
       if (data.event_details?.date) {
-        // Create a Date object from the input value and convert to ISO format
         const dateObj = new Date(data.event_details.date);
         if (!isNaN(dateObj.getTime())) {
           data.event_details.date = dateObj.toISOString();
         }
-      }
-
-      // Fix for MongoDB ObjectId cast error with categories
-      if (data.post_type === "restaurants" && data.restaurant_details) {
-        console.log("Original restaurant details:", data.restaurant_details);
-        console.log(
-          "Final restaurant details:",
-          JSON.stringify(data.restaurant_details)
-        );
       }
 
       if (isEditMode) {
@@ -217,6 +201,10 @@ function PostManagementPage() {
       navigate(`/${data.post_type}/${data.slug}`);
     } catch (error) {
       console.error("Error submitting form:", error);
+      setError("responseError", {
+        type: "manual",
+        message: error || "Failed to save post",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -230,7 +218,12 @@ function PostManagementPage() {
 
       <FormProvider methods={methods} onSubmit={methods.handleSubmit(onSubmit)}>
         <div className="max-w-4xl mx-auto space-y-6">
-          <FSelect name="post_type" label="Post Type" required>
+          <FSelect
+            name="post_type"
+            label="Post Type"
+            required
+            onClick={() => clearErrors("responseError")}
+          >
             <option value="">Select a type</option>
             <option value="news">News</option>
             <option value="events">Events</option>
@@ -242,20 +235,28 @@ function PostManagementPage() {
             label="Title"
             placeholder="Enter post title"
             required
+            onClick={() => clearErrors("responseError")}
           />
 
-          <FEditor name="content" label="Content" required />
+          <FEditor
+            name="content"
+            label="Content"
+            required
+            onClick={() => clearErrors("responseError")}
+          />
 
           <FTextField
             name="image"
             label="Image URL"
             placeholder="https://example.com/image.jpg"
+            onClick={() => clearErrors("responseError")}
           />
 
           <FTextField
             name="tags"
-            label="Tags (comma-separated)"
-            placeholder="tag1, tag2, tag3"
+            label="Tag"
+            placeholder="Enter tag"
+            onClick={() => clearErrors("responseError")}
           />
 
           <FTextField
@@ -263,6 +264,7 @@ function PostManagementPage() {
             label="Slug"
             placeholder="your-post-slug"
             required
+            onClick={() => clearErrors("responseError")}
           />
 
           {/* Event-specific fields */}
@@ -274,21 +276,19 @@ function PostManagementPage() {
                 label="Event Date"
                 type="datetime-local"
                 required
-                inputProps={{
-                  pattern: "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}",
-                }}
+                onClick={() => clearErrors("responseError")}
               />
               <FTextField
                 name="event_details.location"
                 label="Location"
                 required
+                onClick={() => clearErrors("responseError")}
               />
               <FTextField
                 name="event_details.description"
                 label="Description"
-                multiline={true}
-                rows={3}
                 required
+                onClick={() => clearErrors("responseError")}
               />
             </div>
           )}
@@ -297,72 +297,55 @@ function PostManagementPage() {
           {postType === "restaurants" && (
             <div className="space-y-4 border-t pt-4">
               <h3 className="text-xl font-semibold">Restaurant Details</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <FTextField
-                  name="restaurant_details.longitude"
-                  label="Longitude"
-                  type="number"
-                  step="any"
-                  required
-                />
-                <FTextField
-                  name="restaurant_details.latitude"
-                  label="Latitude"
-                  type="number"
-                  step="any"
-                  required
-                />
-              </div>
+              <FTextField
+                name="restaurant_details.longitude"
+                label="Longitude"
+                required
+                onClick={() => clearErrors("responseError")}
+              />
+              <FTextField
+                name="restaurant_details.latitude"
+                label="Latitude"
+                required
+                onClick={() => clearErrors("responseError")}
+              />
               <FTextField
                 name="restaurant_details.address"
                 label="Address"
                 required
+                onClick={() => clearErrors("responseError")}
               />
               <FTextField
                 name="restaurant_details.opening_hours"
                 label="Opening Hours"
-                placeholder="e.g., Mon-Fri: 9AM-10PM, Sat-Sun: 10AM-11PM"
                 required
+                onClick={() => clearErrors("responseError")}
               />
-              <FSelect
+              <FTextField
                 name="restaurant_details.price_range"
                 label="Price Range"
                 required
-              >
-                <option value="">Select price range</option>
-                <option value="$">$</option>
-                <option value="$$">$$</option>
-                <option value="$$$">$$$</option>
-                <option value="$$$$">$$$$</option>
-              </FSelect>
+                onClick={() => clearErrors("responseError")}
+              />
             </div>
           )}
 
-          <div className="flex justify-end space-x-4 pt-6">
-            <button
-              type="button"
-              onClick={() => navigate("/")}
-              className="px-6 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={() => methods.reset()}
-              className="px-6 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50"
-            >
-              Reset
-            </button>
+          {/* Error message */}
+          {errors.responseError && (
+            <p className="text-red-500">{errors.responseError.message}</p>
+          )}
+
+          <div className="flex justify-end mt-6">
             <button
               type="submit"
+              className="bg-black text-white px-4 py-2 hover:bg-gray-800"
               disabled={isSubmitting}
-              className="px-6 py-2 bg-black text-white hover:bg-gray-800 disabled:opacity-50"
             >
               {isSubmitting
                 ? "Submitting..."
                 : isEditMode
-                ? "Update"
-                : "Create"}
+                ? "Update Post"
+                : "Create Post"}
             </button>
           </div>
         </div>

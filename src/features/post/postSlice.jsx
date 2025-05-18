@@ -329,7 +329,18 @@ export const createPost = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      // Extract the most useful error message
+      let errorMessage = "Failed to create post";
+
+      if (error.response?.data?.errors) {
+        return rejectWithValue(error.response.data);
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -346,7 +357,18 @@ export const updatePost = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      // Extract the most useful error message
+      let errorMessage = "Failed to update post";
+
+      if (error.response?.data?.errors) {
+        return rejectWithValue(error.response.data);
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      return rejectWithValue(errorMessage);
     }
   }
 );
