@@ -23,14 +23,14 @@ const defaultValues = {
 function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const auth = useAuth();
+  const { isAuthenticated, isInitialized } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    if (auth.isAuthenticated) {
+    if (isInitialized && isAuthenticated) {
       navigate("/user/me", { replace: true });
     }
-  }, [auth.isAuthenticated, navigate]);
+  }, [isInitialized, isAuthenticated, navigate]);
 
   const methods = useForm({
     resolver: yupResolver(LoginSchema),

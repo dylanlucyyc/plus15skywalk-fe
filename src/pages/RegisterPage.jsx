@@ -29,16 +29,16 @@ const defaultValues = {
 
 function RegisterPage() {
   const navigate = useNavigate();
-  const auth = useAuth();
+  const { isAuthenticated, isInitialized } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
 
   useEffect(() => {
-    if (auth.isAuthenticated) {
+    if (isInitialized && isAuthenticated) {
       navigate("/user/me", { replace: true });
     }
-  }, [auth.isAuthenticated, navigate]);
+  }, [isInitialized, isAuthenticated, navigate]);
 
   const methods = useForm({
     resolver: yupResolver(RegisterSchema),

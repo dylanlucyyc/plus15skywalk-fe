@@ -83,18 +83,20 @@ function PostManagementPage() {
   ]);
 
   // Add authentication check
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isInitialized } = useAuth();
+
+  console.log(isAuthenticated, isInitialized);
 
   useEffect(() => {
     // Redirect to signin page if user is not authenticated
-    if (!isAuthenticated) {
+    if (isInitialized && !isAuthenticated) {
       navigate("/signin", {
         state: {
           from: { pathname: postId ? `/post/edit/${postId}` : "/post/new" },
         },
       });
     }
-  }, [isAuthenticated, navigate, postId]);
+  }, [isInitialized, isAuthenticated, navigate, postId]);
 
   const methods = useForm({
     resolver: yupResolver(postSchema),
