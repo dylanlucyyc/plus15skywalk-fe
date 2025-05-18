@@ -19,11 +19,6 @@
   ],
   "rightNav": [
     {
-      "label": "Map",
-      "link": "/map",
-      "className": "font-black"
-    },
-    {
       "label": "Subscribe",
       "link": "#subscribe",
       "className": "font-black"

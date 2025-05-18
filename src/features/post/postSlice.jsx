@@ -437,7 +437,7 @@ export const fetchPosts = createAsyncThunk(
         postType,
         posts: response.data.posts,
         totalPages: response.data.totalPages,
-        totalCount: response.data.totalCount,
+        totalCount: response.data.totalPosts,
       };
     } catch (error) {
       console.error("Error fetching posts:", error);

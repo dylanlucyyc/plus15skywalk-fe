@@ -39,7 +39,7 @@ function FilterBar({
   return (
     <div className="container mx-auto p-4 bg-black">
       <div className="flex flex-wrap gap-4 mb-4">
-        <div className="filter-dropdown">
+        {/* <div className="filter-dropdown">
           <label htmlFor="filter" className="mr-2 font-medium text-white">
             Filter by:
           </label>
@@ -53,7 +53,7 @@ function FilterBar({
             <option value="pending">Pending</option>
             <option value="archived">Archived</option>
           </select>
-        </div>
+        </div> */}
 
         <div className="search-bar flex-grow">
           <div className="relative">

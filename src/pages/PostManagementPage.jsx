@@ -125,6 +125,8 @@ function PostManagementPage() {
       const fetchPost = async () => {
         try {
           const post = await dispatch(getPost(postId)).unwrap();
+
+          console.log(post);
           // Convert tags array to string
           const formattedPost = {
             ...post,
