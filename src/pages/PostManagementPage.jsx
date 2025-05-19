@@ -44,7 +44,9 @@ const postSchema = Yup.object().shape({
         latitude: Yup.number().required("Latitude is required"),
         address: Yup.string().required("Address is required"),
         opening_hours: Yup.string().required("Opening hours are required"),
-        price_range: Yup.string().required("Price range is required"),
+        price_range: Yup.string()
+          .oneOf(["$", "$$", "$$$", "$$$$"], "Invalid price range")
+          .required("Price range is required"),
       }),
     otherwise: () => Yup.object().notRequired(),
   }),
@@ -356,12 +358,18 @@ function PostManagementPage() {
                 required
                 onClick={() => clearErrors("responseError")}
               />
-              <FTextField
+              <FSelect
                 name="restaurant_details.price_range"
                 label="Price Range"
                 required
                 onClick={() => clearErrors("responseError")}
-              />
+              >
+                <option value="">Select a price range</option>
+                <option value="$">$</option>
+                <option value="$$">$$</option>
+                <option value="$$$">$$$</option>
+                <option value="$$$$">$$$$</option>
+              </FSelect>
             </div>
           )}
 
