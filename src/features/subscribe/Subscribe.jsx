@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { createSubscriber } from "./subscribeSlice";
 import { useEffect } from "react";
-
+import AppearOnScroll from "../../components/AppearOnScroll";
 const SubscribeSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
 });
@@ -51,35 +51,37 @@ function Subscribe() {
   }, [error, setError]);
 
   return (
-    <div
-      id="subscribe"
-      className="flex flex-col px-4 md:flex-row container mx-auto justify-between items-center gap-6 py-12"
-    >
-      <img src={Illustration} alt="" className="w-full md:w-1/2" />
-      <FormProvider
-        methods={methods}
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full md:w-1/2 flex flex-col gap-4"
+    <AppearOnScroll>
+      <div
+        id="subscribe"
+        className="flex flex-col px-4 md:flex-row container mx-auto justify-between items-center gap-6 py-12"
       >
-        <h2 className="text-6xl font-bold">Join Our Newsletter</h2>
-        <div className="flex gap-4">
-          <FTextField
-            name="email"
-            placeholder="Enter your email"
-            onClick={() => clearErrors("responseError")}
-          />
-          <Button type="submit">
-            {" "}
-            {isSubmitting ? "Subscribing..." : "Subscribe"}
-          </Button>
-        </div>
-        {errors.responseError && (
-          <p className="text-red-500 mt-2">
-            {typeof error === "string" ? error : error?.message}
-          </p>
-        )}
-      </FormProvider>
-    </div>
+        <img src={Illustration} alt="" className="w-full md:w-1/2" />
+        <FormProvider
+          methods={methods}
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full md:w-1/2 flex flex-col gap-4"
+        >
+          <h2 className="text-6xl font-bold">Join Our Newsletter</h2>
+          <div className="flex gap-4">
+            <FTextField
+              name="email"
+              placeholder="Enter your email"
+              onClick={() => clearErrors("responseError")}
+            />
+            <Button type="submit">
+              {" "}
+              {isSubmitting ? "Subscribing..." : "Subscribe"}
+            </Button>
+          </div>
+          {errors.responseError && (
+            <p className="text-red-500 mt-2">
+              {typeof error === "string" ? error : error?.message}
+            </p>
+          )}
+        </FormProvider>
+      </div>
+    </AppearOnScroll>
   );
 }
 

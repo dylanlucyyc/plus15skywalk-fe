@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import AppearOnScroll from "../../components/AppearOnScroll";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const handlePageClick = (page) => {
@@ -53,51 +54,53 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   };
 
   return (
-    <div className="flex justify-center items-center space-x-2 my-8">
-      <button
-        onClick={() => handlePageClick(currentPage - 1)}
-        disabled={currentPage === 1}
-        className={`px-2 py-1 ${
-          currentPage === 1
-            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-            : "bg-black text-white hover:bg-gray-700"
-        }`}
-      >
-        Previous
-      </button>
+    <AppearOnScroll>
+      <div className="flex justify-center items-center space-x-2 my-8">
+        <button
+          onClick={() => handlePageClick(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`px-2 py-1 ${
+            currentPage === 1
+              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+              : "bg-black text-white hover:bg-gray-700"
+          }`}
+        >
+          Previous
+        </button>
 
-      {renderPageNumbers().map((page, index) =>
-        page === "..." ? (
-          <span key={`ellipsis-${index}`} className="px-2">
-            ...
-          </span>
-        ) : (
-          <button
-            key={page}
-            onClick={() => handlePageClick(page)}
-            className={`px-2 py-1 ${
-              currentPage === page
-                ? "bg-black text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            {page}
-          </button>
-        )
-      )}
+        {renderPageNumbers().map((page, index) =>
+          page === "..." ? (
+            <span key={`ellipsis-${index}`} className="px-2">
+              ...
+            </span>
+          ) : (
+            <button
+              key={page}
+              onClick={() => handlePageClick(page)}
+              className={`px-2 py-1 ${
+                currentPage === page
+                  ? "bg-black text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              {page}
+            </button>
+          )
+        )}
 
-      <button
-        onClick={() => handlePageClick(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className={`px-2 py-1 ${
-          currentPage === totalPages
-            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-            : "bg-black text-white hover:bg-gray-700"
-        }`}
-      >
-        Next
-      </button>
-    </div>
+        <button
+          onClick={() => handlePageClick(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={`px-2 py-1 ${
+            currentPage === totalPages
+              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+              : "bg-black text-white hover:bg-gray-700"
+          }`}
+        >
+          Next
+        </button>
+      </div>
+    </AppearOnScroll>
   );
 };
 

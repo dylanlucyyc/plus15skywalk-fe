@@ -1,0 +1,17 @@
+@keyframes scroll {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
+.dashed-line {
+  border: none !important;
+  height: 2px;
+  background: linear-gradient(to right, transparent 50%, #000 50%);
+  background-size: 20px 1px;
+  background-repeat: repeat-x;
+  animation: scroll 20s linear infinite;
+}

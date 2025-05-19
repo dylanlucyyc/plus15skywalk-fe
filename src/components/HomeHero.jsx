@@ -1,6 +1,7 @@
 import React from "react";
 import HeroText from "../assets/images/+15-skywalk.svg";
 import HeroImage from "../assets/images/hero-walking.svg";
+import "./HomeHero.css";
 
 function HomeHero() {
   return (
@@ -12,7 +13,7 @@ function HomeHero() {
           src={HeroImage}
           alt="Hero Image"
         />
-        <span className="w-full border-b border-dashed absolute bottom-20 z-0"></span>
+        <span className="dashed-line w-full border-b border-dashed absolute bottom-20 z-0"></span>
       </div>
     </div>
   );

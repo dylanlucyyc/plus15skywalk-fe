@@ -1,0 +1,59 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.appear-on-scroll {
+  opacity: 0;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.appear-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Variant animations */
+.appear-from-left {
+  transform: translateX(-50px);
+}
+
+.appear-from-right {
+  transform: translateX(50px);
+}
+
+.appear-from-bottom {
+  transform: translateY(50px);
+}
+
+.appear-from-top {
+  transform: translateY(-50px);
+}
+
+/* Different animation speeds */
+.appear-slow {
+  transition-duration: 1.2s;
+}
+
+.appear-fast {
+  transition-duration: 0.5s;
+}
+
+/* Animation delay variants */
+.appear-delay-100 {
+  transition-delay: 0.1s;
+}
+
+.appear-delay-300 {
+  transition-delay: 0.3s;
+}
+
+.appear-delay-500 {
+  transition-delay: 0.5s;
+}

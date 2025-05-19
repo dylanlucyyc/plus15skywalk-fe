@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import NewsCard from "./NewsCard";
 import EventCard from "./EventCard";
 import RestaurantCard from "./RestaurantCard";
-
+import AppearOnScroll from "../../components/AppearOnScroll";
 const Posts = ({ posts, postType }) => {
   const renderContent = () => {
     if (!posts || posts.length === 0) {
@@ -46,10 +46,12 @@ const Posts = ({ posts, postType }) => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold mb-6 capitalize">{postType}</h2>
-      {renderContent()}
-    </div>
+    <AppearOnScroll>
+      <div className="container mx-auto px-4 py-8">
+        <h2 className="text-2xl font-bold mb-6 capitalize">{postType}</h2>
+        {renderContent()}
+      </div>
+    </AppearOnScroll>
   );
 };
 
