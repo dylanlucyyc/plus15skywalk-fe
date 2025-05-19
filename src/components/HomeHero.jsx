@@ -5,7 +5,7 @@ import "./HomeHero.css";
 
 function HomeHero() {
   return (
-    <div className="flex h-[85vh] flex-col items-center justify-center border-b-1">
+    <div className="flex h-auto flex-col items-center justify-center border-b-1">
       <img src={HeroText} alt="Hero Text" className="hidden md:block" />
       <div className="relative w-full">
         <img
