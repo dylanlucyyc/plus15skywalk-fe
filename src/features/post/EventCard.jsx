@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 import { format } from "date-fns";
+import FavoriteButton from "../favorite/FavoriteButton";
 
 function EventCard({ event }) {
   return (
@@ -12,7 +13,10 @@ function EventCard({ event }) {
         className="w-full h-48 object-cover border-b-1"
       />
       <div className="px-2 py-4">
-        <h2 className="text-3xl font-regular mb-2">{event?.title}</h2>
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-3xl font-regular">{event?.title}</h2>
+          <FavoriteButton postId={event?._id} />
+        </div>
         <p
           className="font-medium text-lg"
           style={{

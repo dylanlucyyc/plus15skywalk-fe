@@ -8,6 +8,7 @@ import EventCard from "../features/post/EventCard";
 import NewsCard from "../features/post/NewsCard";
 import RestaurantCard from "../features/post/RestaurantCard";
 import { fDateTime } from "../utils/formatTime";
+import FavoriteButton from "../features/favorite/FavoriteButton";
 
 // Component to display relevant posts based on posttype
 const RelevantPosts = ({ posts, postType }) => {
@@ -93,9 +94,12 @@ function SinglePostPage() {
         className="w-full h-64 object-cover mb-4"
       />
       <div className="flex justify-between items-center mb-4">
-        <span className="bg-[#1EB8CC] text-white px-4 py-2 inline-block">
-          {currentPost?.post?.tags}
-        </span>
+        <div className="flex items-center gap-4">
+          <span className="bg-[#1EB8CC] text-white px-4 py-2 inline-block">
+            {currentPost?.post?.tags}
+          </span>
+          <FavoriteButton postId={currentPost?.post?._id} size="lg" />
+        </div>
         {isAuthor && (
           <div className="flex gap-2">
             <Link

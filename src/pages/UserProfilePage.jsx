@@ -17,6 +17,7 @@ import RestaurantCard from "../features/post/RestaurantCard";
 import { fetchUserPosts } from "../features/post/postSlice";
 import BlankProfile from "../assets/images/blank-profile-picture.webp";
 import useAuth from "../hooks/useAuth";
+import { getUserFavorites } from "../features/favorite/favoriteSlice";
 
 function UserProfilePage() {
   const { userId } = useParams();
@@ -33,8 +34,17 @@ function UserProfilePage() {
     isLoading: state.post?.isLoading,
     currentUser: state.post?.currentUser,
   }));
+
+  const { userFavorites, isLoading: favoritesLoading } = useSelector(
+    (state) => ({
+      userFavorites: state.favorite?.userFavorites || [],
+      isLoading: state.favorite?.isLoading,
+    })
+  );
+
   const { user, isInitialized } = useAuth();
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [activeTab, setActiveTab] = useState("posts"); // 'posts' or 'favorites'
 
   // Use either auth context or Redux for authentication check
   const authUser = user || reduxUser;
@@ -50,6 +60,7 @@ function UserProfilePage() {
   useEffect(() => {
     if (selectedUser?._id) {
       dispatch(fetchUserPosts(selectedUser._id));
+      dispatch(getUserFavorites(selectedUser._id));
     }
   }, [dispatch, selectedUser?._id]);
 
@@ -71,6 +82,72 @@ function UserProfilePage() {
 
   const isOwnProfile =
     !userId || (authUser && authUser._id === userId) || userId === "me";
+
+  const renderFavorites = () => {
+    if (favoritesLoading) {
+      return (
+        <div className="flex justify-center items-center h-32">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        </div>
+      );
+    }
+
+    if (!userFavorites || userFavorites.length === 0) {
+      return (
+        <div className="text-center py-8">
+          <p className="text-gray-500">No favorite posts yet</p>
+        </div>
+      );
+    }
+
+    // Group favorites by post type
+    const newsPosts = userFavorites
+      .filter((fav) => fav.post_id.post_type === "news")
+      .map((fav) => fav.post_id);
+    const eventPosts = userFavorites
+      .filter((fav) => fav.post_id.post_type === "events")
+      .map((fav) => fav.post_id);
+    const restaurantPosts = userFavorites
+      .filter((fav) => fav.post_id.post_type === "restaurants")
+      .map((fav) => fav.post_id);
+
+    return (
+      <div className="space-y-8">
+        {newsPosts.length > 0 && (
+          <div>
+            <h4 className="text-lg font-semibold mb-4">News</h4>
+            <div className="flex flex-col gap-4">
+              {newsPosts.map((post) => (
+                <NewsCard key={post._id} post={post} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {eventPosts.length > 0 && (
+          <div>
+            <h4 className="text-lg font-semibold mb-4">Events</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {eventPosts.map((post) => (
+                <EventCard key={post._id} event={post} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {restaurantPosts.length > 0 && (
+          <div>
+            <h4 className="text-lg font-semibold mb-4">Restaurants</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {restaurantPosts.map((post) => (
+                <RestaurantCard key={post._id} post={post} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const renderPostsByType = (posts) => {
     if (postsLoading) {
@@ -183,15 +260,34 @@ function UserProfilePage() {
         {/* Posts Section */}
         <div className="md:col-span-2">
           <div className="bg-white shadow-md p-6 mb-4">
-            <h3 className="text-xl font-semibold mb-4">Favorites</h3>
-            <div className="text-center py-4">
-              <p className="text-gray-500">No favorites yet</p>
+            <div className="border-b border-gray-200 mb-4">
+              <div className="flex -mb-px">
+                <button
+                  onClick={() => setActiveTab("favorites")}
+                  className={`mr-8 py-2 ${
+                    activeTab === "favorites"
+                      ? "border-b-2 border-black font-semibold"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Favorites
+                </button>
+                <button
+                  onClick={() => setActiveTab("posts")}
+                  className={`py-2 ${
+                    activeTab === "posts"
+                      ? "border-b-2 border-black font-semibold"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Posts
+                </button>
+              </div>
             </div>
-          </div>
 
-          <div className="bg-white shadow-md p-6">
-            <h3 className="text-xl font-semibold mb-4">Posts</h3>
-            {renderPostsByType(userPosts)}
+            {activeTab === "favorites"
+              ? renderFavorites()
+              : renderPostsByType(userPosts)}
           </div>
         </div>
       </div>
