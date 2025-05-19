@@ -1,7 +1,7 @@
 import React from "react";
 import { FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import FavoriteButton from "../favorite/FavoriteButton";
+// import FavoriteButton from "../favorite/FavoriteButton";
 
 function NewsCard({ post }) {
   return (
@@ -19,7 +19,7 @@ function NewsCard({ post }) {
             <span className="text-sm font-semibold uppercase text-gray-600 block mb-1">
               {post.tags || "News"}
             </span>
-            <FavoriteButton postId={post._id} size="sm" />
+            {/* <FavoriteButton postId={post._id} size="sm" /> */}
           </div>
           <Link to={`/${post.post_type}/${post.slug}`}>
             <h3
