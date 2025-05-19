@@ -182,11 +182,22 @@ function PostManagementPage() {
       setIsSubmitting(true);
       clearErrors("responseError");
 
+      // Debug log to check form data
+      console.log("Form data before submission:", data);
+
       if (!data.slug) {
         throw new Error("Slug is required");
       }
 
-      if (data.event_details?.date) {
+      // Ensure event_details is properly structured
+      if (data.post_type === "events") {
+        if (!data.event_details) {
+          data.event_details = {
+            date: "",
+            location: "",
+            description: "",
+          };
+        }
         try {
           const dateObj = new Date(data.event_details.date);
           if (isNaN(dateObj.getTime())) {
@@ -198,6 +209,22 @@ function PostManagementPage() {
           throw new Error("Invalid event date format");
         }
       }
+
+      // Ensure restaurant_details is properly structured
+      if (data.post_type === "restaurants") {
+        if (!data.restaurant_details) {
+          data.restaurant_details = {
+            longitude: "",
+            latitude: "",
+            address: "",
+            opening_hours: "",
+            price_range: "",
+          };
+        }
+      }
+
+      // Debug log to check final data being sent
+      console.log("Final data being sent:", data);
 
       if (isEditMode) {
         await dispatch(updatePost({ postId, postData: data })).unwrap();

@@ -73,8 +73,6 @@ function AuthProvider({ children }) {
           const response = await apiService.get("api/user/me");
           const user = response.data;
 
-          console.log(user);
-
           dispatch({
             type: INITIALIZE,
             payload: { isAuthenticated: true, user },

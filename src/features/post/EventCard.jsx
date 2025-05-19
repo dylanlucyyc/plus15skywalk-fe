@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import FavoriteButton from "../favorite/FavoriteButton";
 
 function EventCard({ event }) {
+  console.log(event);
   const formatEventDate = (dateString) => {
     try {
       if (!dateString) return "Date not specified";
@@ -18,7 +19,7 @@ function EventCard({ event }) {
   };
 
   return (
-    <div className="border-1 border-black overflow-hidden">
+    <div className="h-full flex flex-col border-1 border-black overflow-hidden">
       <img
         src={event?.image}
         alt={event?.title}

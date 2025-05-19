@@ -14,7 +14,6 @@ function NewsCard({ post }) {
           alt={post.title}
           className="flex-shrink-0 object-cover w-[100px] h-[100px]"
         />
-        {console.log(post)}
         <div className="flex-grow min-w-0">
           <div className="flex justify-between items-start">
             <span className="text-sm font-semibold uppercase text-gray-600 block mb-1">
