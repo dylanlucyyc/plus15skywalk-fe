@@ -53,7 +53,7 @@ function EventCard({ event }) {
       </div>
       <Link
         to={`/events/${event?.slug}`}
-        className="bg-black px-2 py-4 flex justify-between border-t border-black hover:bg-white group duration-250"
+        className="bg-black px-2 py-4 mt-auto flex justify-between border-t border-black hover:bg-white group duration-250"
       >
         <span className="inline-block text-center text-white text-xl group-hover:text-black">
           View Details
