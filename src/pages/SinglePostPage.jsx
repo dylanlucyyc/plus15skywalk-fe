@@ -86,7 +86,7 @@ function SinglePostPage() {
   const relevantPosts = currentPost?.relevantPosts || [];
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 border-b-1 border-[#1EB8CC]">
       <img
         src={currentPost?.post?.image}
         alt={currentPost?.post?.title}

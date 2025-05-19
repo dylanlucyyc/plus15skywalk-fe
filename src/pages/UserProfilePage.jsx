@@ -48,7 +48,6 @@ function UserProfilePage() {
   }, [dispatch, userId]);
 
   useEffect(() => {
-    console.log("here");
     if (selectedUser?._id) {
       dispatch(fetchUserPosts(selectedUser._id));
     }
@@ -136,7 +135,7 @@ function UserProfilePage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 border-b-1 border-[#1EB8CC]">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Profile Section */}
         <div className="md:col-span-1">

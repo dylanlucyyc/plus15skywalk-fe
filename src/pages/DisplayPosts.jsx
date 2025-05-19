@@ -124,7 +124,7 @@ function DisplayPosts() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <>
+    <div className="border-b-1 border-[#1EB8CC]">
       <Banner postType={postType} />
       <FilterBar
         totalResults={totalCount || 0}
@@ -139,7 +139,7 @@ function DisplayPosts() {
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
-    </>
+    </div>
   );
 }
 

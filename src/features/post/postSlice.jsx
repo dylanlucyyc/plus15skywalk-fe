@@ -496,7 +496,7 @@ export const fetchUserPosts = createAsyncThunk(
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      return response.data;
+      return { posts: response.data, totalPages: response.data.totalPages };
     } catch (error) {
       return rejectWithValue(error.message);
     }
