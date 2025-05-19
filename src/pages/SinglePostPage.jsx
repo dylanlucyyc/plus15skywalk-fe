@@ -51,10 +51,6 @@ function SinglePostPage() {
     isLoading: state.post.isLoading,
   }));
 
-  console.log("Auth user:", user);
-  console.log("Redux user:", currentUser);
-  console.log("Current post:", currentPost);
-
   useEffect(() => {
     if (slug) {
       dispatch(getPostBySlug(`${slug}`));
@@ -75,7 +71,12 @@ function SinglePostPage() {
   };
 
   // Don't render until post data is loaded
-  if (isLoading || isDeleting) return <div>Loading...</div>;
+  if (isLoading || isDeleting)
+    return (
+      <div className="text-center h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
   if (!currentPost) return <div>Post not found</div>;
 
   // Check if the current user is the author of the post
