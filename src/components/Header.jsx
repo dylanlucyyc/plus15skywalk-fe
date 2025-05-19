@@ -64,6 +64,7 @@ const Header = memo(function Header() {
 
       <ul className="hidden md:flex gap-[20px] list-none justify-end ml-auto font-black">
         {renderNavItems(navigationData.rightNav)}
+        <li>|</li>
         {isAuthenticated && (
           <>
             <li>
