@@ -49,7 +49,7 @@ function UpcomingEvents() {
   return (
     <div className="container mx-auto my-12 px-4 flex flex-col gap-6">
       <div className="flex justify-between items-center w-full">
-        <h2 className="text-6xl font-bold">Upcoming Events</h2>
+        <h2 className="text-2xl md:text-6xl font-bold">Upcoming Events</h2>
         <Button as="a" href="/events">
           View All
         </Button>

@@ -62,7 +62,9 @@ function Subscribe() {
           onSubmit={handleSubmit(onSubmit)}
           className="w-full md:w-1/2 flex flex-col gap-4"
         >
-          <h2 className="text-6xl font-bold">Join Our Newsletter</h2>
+          <h2 className="text-2xl md:text-6xl font-bold">
+            Join Our Newsletter
+          </h2>
           <div className="flex gap-4">
             <FTextField
               name="email"

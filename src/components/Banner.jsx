@@ -10,7 +10,7 @@ function Banner({ postType }) {
           <img src={Illustration} alt="People at cafe illustration" />
         </div>
         <div className="z-10 ">
-          <h2 className="text-6xl font-bold text-white">
+          <h2 className="text-2xl md:text-6xl font-bold text-white">
             +15 Skywalk {postType}
           </h2>
         </div>
