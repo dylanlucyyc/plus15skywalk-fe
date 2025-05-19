@@ -121,7 +121,12 @@ function DisplayPosts() {
     [dispatch, path]
   );
 
-  if (isLoading && posts.length === 0) return <div>Loading...</div>;
+  if (isLoading && posts.length === 0)
+    return (
+      <div className="text-center h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
   if (error) return <div>Error: {error}</div>;
 
   return (

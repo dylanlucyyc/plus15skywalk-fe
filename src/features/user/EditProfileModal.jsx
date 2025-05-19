@@ -37,7 +37,12 @@ function EditProfileModal({ open, onClose, user }) {
   if (!open) return null;
 
   // Don't render anything until auth is initialized
-  if (!isInitialized) return <div>Loading...</div>;
+  if (!isInitialized)
+    return (
+      <div className="text-center h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
