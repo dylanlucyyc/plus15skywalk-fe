@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import AppearOnScroll from "../components/AppearOnScroll";
+import PageTitle from "../components/PageTitle";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -63,6 +64,7 @@ function LoginPage() {
   return (
     <AppearOnScroll>
       <div className="flex flex-col gap-10 items-center justify-between md:flex-row md:gap-20 min-h-screen container px-4 py-20 mx-auto my-auto">
+        <PageTitle title="Sign In" />
         <div className="flex justify-center w-1/2">
           <img
             src={illustration}

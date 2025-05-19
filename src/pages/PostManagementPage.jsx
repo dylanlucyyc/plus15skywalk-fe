@@ -11,6 +11,7 @@ import {
   getPostById,
 } from "../features/post/postSlice";
 import useAuth from "../hooks/useAuth";
+import PageTitle from "../components/PageTitle";
 
 const postSchema = Yup.object().shape({
   post_type: Yup.string().required("Post type is required"),
@@ -212,6 +213,7 @@ function PostManagementPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <PageTitle title={isEditMode ? "Edit Post" : "Create New Post"} />
       <h1 className="text-3xl font-bold mb-8">
         {isEditMode ? "Edit Post" : "Create New Post"}
       </h1>

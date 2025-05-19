@@ -7,6 +7,8 @@ import AboutUs from "../components/AboutUs";
 import NewsDisplay from "../features/post/NewsDisplay";
 import UpcomingEvents from "../features/post/UpcomingEvents";
 import AppearOnScroll from "../components/AppearOnScroll";
+import PageTitle from "../components/PageTitle";
+
 function HomePage() {
   const { isInitialized } = useAuth();
 
@@ -16,6 +18,7 @@ function HomePage() {
 
   return (
     <>
+      <PageTitle title="Home" />
       <AppearOnScroll>
         <HomeHero />
       </AppearOnScroll>

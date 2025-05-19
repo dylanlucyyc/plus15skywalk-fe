@@ -9,6 +9,7 @@ import NewsCard from "../features/post/NewsCard";
 import RestaurantCard from "../features/post/RestaurantCard";
 import { fDateTime } from "../utils/formatTime";
 import FavoriteButton from "../features/favorite/FavoriteButton";
+import PageTitle from "../components/PageTitle";
 
 // Component to display relevant posts based on posttype
 const RelevantPosts = ({ posts, postType }) => {
@@ -88,6 +89,7 @@ function SinglePostPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 border-b-1 border-[#1EB8CC]">
+      <PageTitle title={currentPost?.post?.title} />
       <img
         src={currentPost?.post?.image}
         alt={currentPost?.post?.title}

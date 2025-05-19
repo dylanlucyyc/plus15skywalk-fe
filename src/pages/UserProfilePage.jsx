@@ -18,6 +18,7 @@ import { fetchUserPosts } from "../features/post/postSlice";
 import BlankProfile from "../assets/images/blank-profile-picture.webp";
 import useAuth from "../hooks/useAuth";
 import { getUserFavorites } from "../features/favorite/favoriteSlice";
+import PageTitle from "../components/PageTitle";
 
 function UserProfilePage() {
   const { userId } = useParams();
@@ -213,6 +214,9 @@ function UserProfilePage() {
 
   return (
     <div className="container mx-auto px-4 py-8 border-b-1 border-[#1EB8CC]">
+      <PageTitle
+        title={isOwnProfile ? "My Profile" : `${selectedUser?.name}'s Profile`}
+      />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Profile Section */}
         <div className="md:col-span-1">

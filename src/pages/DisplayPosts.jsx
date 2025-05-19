@@ -5,6 +5,7 @@ import Banner from "../components/Banner";
 import FilterBar from "../features/post/FilterBar";
 import Posts from "../features/post/Posts";
 import Pagination from "../features/post/Pagination";
+import PageTitle from "../components/PageTitle";
 import {
   setCurrentPage,
   fetchPosts,
@@ -125,6 +126,7 @@ function DisplayPosts() {
 
   return (
     <div className="border-b-1 border-[#1EB8CC]">
+      <PageTitle title={postType} />
       <Banner postType={postType} />
       <FilterBar
         totalResults={totalCount || 0}

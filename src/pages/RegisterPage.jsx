@@ -9,6 +9,8 @@ import Button from "../components/Button";
 import illustration from "../assets/images/Illustration.svg";
 import useAuth from "../hooks/useAuth";
 import AppearOnScroll from "../components/AppearOnScroll";
+import PageTitle from "../components/PageTitle";
+
 const RegisterSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -67,6 +69,7 @@ function RegisterPage() {
   return (
     <AppearOnScroll>
       <div className="flex flex-col gap-10 items-center justify-between md:flex-row md:gap-20 min-h-screen container px-4 py-20 mx-auto my-auto">
+        <PageTitle title="Sign Up" />
         <FormProvider
           methods={methods}
           onSubmit={handleSubmit(onSubmit)}
