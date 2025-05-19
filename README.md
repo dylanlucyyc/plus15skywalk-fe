@@ -98,6 +98,15 @@ npm run lint
 # yarn lint
 ```
 
+## User Stories
+
+- **As a user,** I want to browse a categorized directory of restaurants and services accessible via the +15 Skywalk, view their details (hours, location), and save my favorites.
+- **As a user,** I want to find listings for downtown events and read news updates related to the +15 system, all organized by category.
+- **As a user,** I want to easily register for an account, log in, and manage my profile.
+- **As a user,** I want to be able to mark restaurants, events, or news articles as favorites and access them easily.
+- **As a user,** I want to access and use the application effectively on different devices (desktop, mobile) due to a responsive design.
+- **As a user,** I want a clear and intuitive interface to find information quickly.
+
 ## Development Challenges
 
 - **Data Limitations**: As a student project, access to real-time or official +15 data was limited. (Consider if this is still relevant for the frontend or if there are new frontend-specific challenges)
