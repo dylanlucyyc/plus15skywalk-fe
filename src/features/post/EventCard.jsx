@@ -5,6 +5,18 @@ import { format } from "date-fns";
 import FavoriteButton from "../favorite/FavoriteButton";
 
 function EventCard({ event }) {
+  const formatEventDate = (dateString) => {
+    try {
+      if (!dateString) return "Date not specified";
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return "Invalid date";
+      return format(date, "MMM d, yyyy h:mm a");
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Invalid date";
+    }
+  };
+
   return (
     <div className="border-1 border-black overflow-hidden">
       <img
@@ -31,7 +43,7 @@ function EventCard({ event }) {
         </p>
         <p className="font-medium text-lg mt-6 mb-2 border-t-[0.5px] pt-4">
           <span className="font-bold">Date & Time:</span>{" "}
-          {format(new Date(event?.event_details?.date), "MMM d, yyyy h:mm a")}
+          {formatEventDate(event?.event_details?.date)}
         </p>
         <p className="font-medium text-lg">
           <span className="font-bold">Location:</span>{" "}

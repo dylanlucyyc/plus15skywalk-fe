@@ -187,9 +187,15 @@ function PostManagementPage() {
       }
 
       if (data.event_details?.date) {
-        const dateObj = new Date(data.event_details.date);
-        if (!isNaN(dateObj.getTime())) {
-          data.event_details.date = dateObj.toISOString();
+        try {
+          const dateObj = new Date(data.event_details.date);
+          if (isNaN(dateObj.getTime())) {
+            throw new Error("Invalid event date");
+          }
+          data.event_details.date = dateObj.toISOString().slice(0, 16);
+        } catch (error) {
+          console.error("Date parsing error:", error);
+          throw new Error("Invalid event date format");
         }
       }
 
@@ -204,7 +210,7 @@ function PostManagementPage() {
       console.error("Error submitting form:", error);
       setError("responseError", {
         type: "manual",
-        message: error || "Failed to save post",
+        message: error.message || "Failed to save post",
       });
     } finally {
       setIsSubmitting(false);
