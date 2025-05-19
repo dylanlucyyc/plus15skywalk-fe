@@ -2,6 +2,23 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import apiService from "../../app/apiService";
 
+// Cache to prevent redundant API calls
+const favoritesCache = {
+  counts: {}, // postId -> count
+  status: {}, // postId -> {isFavorited, timestamp}
+  expiryTime: 60000, // 1 minute cache validity
+};
+
+// Helper to check if cached data is still valid
+const isCacheValid = (postId, cacheType) => {
+  const cache =
+    cacheType === "status" ? favoritesCache.status : favoritesCache.counts;
+  return (
+    cache[postId] &&
+    Date.now() - cache[postId].timestamp < favoritesCache.expiryTime
+  );
+};
+
 // Async Thunks
 export const createFavorite = createAsyncThunk(
   "favorite/createFavorite",
@@ -10,6 +27,15 @@ export const createFavorite = createAsyncThunk(
       const response = await apiService.post("/api/favorites", {
         post_id: postId,
       });
+      // Update cache after successful creation
+      favoritesCache.status[postId] = {
+        isFavorited: true,
+        timestamp: Date.now(),
+      };
+      favoritesCache.counts[postId] = {
+        count: (favoritesCache.counts[postId]?.count || 0) + 1,
+        timestamp: Date.now(),
+      };
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -34,6 +60,15 @@ export const deleteFavoriteByPostId = createAsyncThunk(
   async (postId, { rejectWithValue }) => {
     try {
       const response = await apiService.delete(`/api/favorites/post/${postId}`);
+      // Update cache after successful deletion
+      favoritesCache.status[postId] = {
+        isFavorited: false,
+        timestamp: Date.now(),
+      };
+      favoritesCache.counts[postId] = {
+        count: Math.max(0, (favoritesCache.counts[postId]?.count || 1) - 1),
+        timestamp: Date.now(),
+      };
       return { ...response.data, postId };
     } catch (error) {
       return rejectWithValue(error.message);
@@ -55,9 +90,32 @@ export const getUserFavorites = createAsyncThunk(
 
 export const checkFavorite = createAsyncThunk(
   "favorite/checkFavorite",
-  async (postId, { rejectWithValue }) => {
+  async (postId, { rejectWithValue, getState }) => {
     try {
+      // Check cache first to avoid unnecessary API calls
+      if (isCacheValid(postId, "status")) {
+        const state = getState();
+        // If we already have this in the state, don't make the API call
+        if (state.favorite.favoriteStatus[postId] !== undefined) {
+          return {
+            isFavorited: state.favorite.favoriteStatus[postId],
+            postId,
+            fromCache: true,
+          };
+        }
+        return {
+          isFavorited: favoritesCache.status[postId].isFavorited,
+          postId,
+          fromCache: true,
+        };
+      }
+
       const response = await apiService.get(`/api/favorites/check/${postId}`);
+      // Update cache
+      favoritesCache.status[postId] = {
+        isFavorited: response.data.isFavorited,
+        timestamp: Date.now(),
+      };
       return { ...response.data, postId };
     } catch (error) {
       return rejectWithValue(error.message);
@@ -67,9 +125,32 @@ export const checkFavorite = createAsyncThunk(
 
 export const getFavoriteCount = createAsyncThunk(
   "favorite/getFavoriteCount",
-  async (postId, { rejectWithValue }) => {
+  async (postId, { rejectWithValue, getState }) => {
     try {
+      // Check cache first
+      if (isCacheValid(postId, "counts")) {
+        const state = getState();
+        // If we already have this in the state, don't make the API call
+        if (state.favorite.favoriteCounts[postId] !== undefined) {
+          return {
+            count: state.favorite.favoriteCounts[postId],
+            postId,
+            fromCache: true,
+          };
+        }
+        return {
+          count: favoritesCache.counts[postId].count,
+          postId,
+          fromCache: true,
+        };
+      }
+
       const response = await apiService.get(`/api/favorites/count/${postId}`);
+      // Update cache
+      favoritesCache.counts[postId] = {
+        count: response.data.count,
+        timestamp: Date.now(),
+      };
       return { ...response.data, postId };
     } catch (error) {
       return rejectWithValue(error.message);
@@ -189,6 +270,10 @@ const favoriteSlice = createSlice({
         action.payload.data.forEach((favorite) => {
           const postId = favorite.post_id._id;
           state.favoriteStatus[postId] = true;
+          favoritesCache.status[postId] = {
+            isFavorited: true,
+            timestamp: Date.now(),
+          };
         });
       })
       .addCase(getUserFavorites.rejected, (state, action) => {
@@ -203,6 +288,13 @@ const favoriteSlice = createSlice({
         state.error = null;
       })
       .addCase(checkFavorite.fulfilled, (state, action) => {
+        // Don't update state if response is from cache and already in state
+        if (action.payload.fromCache) {
+          state.isLoading = false;
+          state.error = null;
+          return;
+        }
+
         state.isLoading = false;
         state.error = null;
         const postId = action.payload.postId;
@@ -219,6 +311,13 @@ const favoriteSlice = createSlice({
         state.error = null;
       })
       .addCase(getFavoriteCount.fulfilled, (state, action) => {
+        // Don't update state if response is from cache and already in state
+        if (action.payload.fromCache) {
+          state.isLoading = false;
+          state.error = null;
+          return;
+        }
+
         state.isLoading = false;
         state.error = null;
         const postId = action.payload.postId;

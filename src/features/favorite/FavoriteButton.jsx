@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,7 @@ function FavoriteButton({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   const { favoriteStatus, favoriteCounts, isLoading } = useSelector(
     (state) => ({
@@ -33,13 +34,14 @@ function FavoriteButton({
 
   // Check favorite status and count when component mounts
   useEffect(() => {
-    if (postId) {
+    if (postId && !hasLoaded) {
       if (isAuthenticated) {
         dispatch(checkFavorite(postId));
       }
       dispatch(getFavoriteCount(postId));
+      setHasLoaded(true);
     }
-  }, [dispatch, postId, isAuthenticated]);
+  }, [dispatch, postId, isAuthenticated, hasLoaded]);
 
   const handleToggleFavorite = (e) => {
     e.preventDefault();
@@ -90,4 +92,5 @@ function FavoriteButton({
   );
 }
 
-export default FavoriteButton;
+// Use React.memo to prevent unnecessary re-renders
+export default memo(FavoriteButton);
