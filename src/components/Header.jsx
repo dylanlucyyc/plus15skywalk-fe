@@ -1,46 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, memo, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import navigationData from "../data/navigation.json";
 import useAuth from "../hooks/useAuth";
 
-function Header() {
+const NavItem = memo(({ item, onClick }) => (
+  <li>
+    <Link
+      to={item.link}
+      style={{ fontWeight: item.fontWeight }}
+      onClick={onClick}
+    >
+      {item.label}
+    </Link>
+  </li>
+));
+
+const Header = memo(function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     logout(() => {
       navigate("/signin");
     });
-  };
+  }, [logout, navigate]);
 
-  const handleScrollToSection = (e, link) => {
+  const handleScrollToSection = useCallback((e, link) => {
     if (link.startsWith("#")) {
       e.preventDefault();
       const element = document.querySelector(link);
       if (element) {
         element.scrollIntoView({ behavior: "smooth" });
-        setIsMenuOpen(false); // Close mobile menu after clicking
+        setIsMenuOpen(false);
       }
     }
-  };
+  }, []);
 
-  const renderNavItems = (items) => {
-    return items.map((item, index) => (
-      <React.Fragment key={item.label}>
-        <li>
-          <Link
-            to={item.link}
-            style={{ fontWeight: item.fontWeight }}
+  const renderNavItems = useCallback(
+    (items) => {
+      return items.map((item, index) => (
+        <React.Fragment key={item.label}>
+          <NavItem
+            item={item}
             onClick={(e) => handleScrollToSection(e, item.link)}
-          >
-            {item.label}
-          </Link>
-        </li>
-        {index < items.length && <li>|</li>}
-      </React.Fragment>
-    ));
-  };
+          />
+          {index < items.length - 1 && <li>|</li>}
+        </React.Fragment>
+      ));
+    },
+    [handleScrollToSection]
+  );
 
   return (
     <header className="flex w-full font-darker container mx-auto px-4 py-6 flex-shrink-0">
@@ -202,6 +212,6 @@ function Header() {
       </div>
     </header>
   );
-}
+});
 
 export default Header;

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { memo } from "react";
 import { Outlet } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-function NoSubscribeLayout() {
+
+const NoSubscribeLayout = memo(function NoSubscribeLayout() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -12,6 +13,6 @@ function NoSubscribeLayout() {
       <Footer />
     </div>
   );
-}
+});
 
 export default NoSubscribeLayout;
