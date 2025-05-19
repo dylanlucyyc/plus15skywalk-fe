@@ -40,4 +40,33 @@
   .container {
     max-width: 1800px;
   }
+
+  a,
+  .anchor {
+    @apply hover:border-b-1 hover:border-black duration-100;
+  }
+
+  .wysiwyg > * {
+    @apply mb-4;
+  }
+
+  .wysiwyg h2 {
+    @apply text-2xl font-bold;
+  }
+
+  .wysiwyg h3 {
+    @apply text-xl font-bold;
+  }
+
+  .wysiwyg a {
+    @apply text-[#1EB8CC] hover:border-b-1 hover:border-[#1EB8CC] duration-100;
+  }
+
+  .wysiwyg ul {
+    @apply list-disc pl-4;
+  }
+
+  .wysiwyg ol {
+    @apply list-decimal pl-4;
+  }
 }

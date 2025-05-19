@@ -125,10 +125,15 @@ function SinglePostPage() {
       <h1 className="text-3xl font-bold mb-4">{currentPost?.post?.title}</h1>
       <p className="text-gray-500 mb-4">
         Posted at {fDateTime(currentPost?.post?.created_at)} by{" "}
-        {currentPost?.post?.posted_by?.name}
+        <Link
+          to={`/user/${currentPost?.post?.posted_by?._id}`}
+          className="anchor text-[#1EB8CC]"
+        >
+          {currentPost?.post?.posted_by?.name}
+        </Link>
       </p>
       <div
-        className="prose max-w-none"
+        className="prose max-w-none wysiwyg"
         dangerouslySetInnerHTML={{ __html: currentPost?.post?.content }}
       />
 

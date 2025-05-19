@@ -77,7 +77,10 @@ const Header = memo(function Header() {
         )}
         <li>
           {isAuthenticated ? (
-            <button onClick={handleLogout} className="font-black">
+            <button
+              onClick={handleLogout}
+              className="font-black anchor cursor-pointer"
+            >
               Log out
             </button>
           ) : (
