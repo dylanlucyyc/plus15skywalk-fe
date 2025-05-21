@@ -62,7 +62,7 @@ The +15 Skywalk platform aims to solve navigation and discovery challenges by pr
 
 ```bash
 # Clone the repository
-git clone [repository-url] # Replace with your frontend repository URL
+git clone https://github.com/dylanlucyyc/plus15skywalk-fe
 
 # Navigate to the project directory
 cd plus15skywalk-fe
